@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -std=c99 `pkg-config --cflags gtk+-3.0 2>/dev/null || echo ""`
+CFLAGS = -Wall -Wextra -std=c99 -rdynamic `pkg-config --cflags gtk+-3.0 2>/dev/null || echo ""`
 LIBS = `pkg-config --libs gtk+-3.0 2>/dev/null || echo ""`
 
 SRC = src/main.c src/membres.c src/entraineurs.c src/cours.c src/equipements.c src/centres.c src/evenements.c src/utils.c

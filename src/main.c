@@ -45,7 +45,7 @@ gboolean validate_credentials(const char* username, const char* password, UserRo
 
 // ============= Login Window Callbacks =============
 
-static void on_login_button_clicked(GtkWidget* widget, gpointer data) {
+void on_login_button_clicked(GtkWidget* widget, gpointer data) {
     GtkEntry* username_entry = GTK_ENTRY(gtk_builder_get_object(builder, "username_entry"));
     GtkEntry* password_entry = GTK_ENTRY(gtk_builder_get_object(builder, "password_entry"));
     GtkComboBoxText* role_combo = GTK_COMBO_BOX_TEXT(gtk_builder_get_object(builder, "role_combo"));
@@ -129,25 +129,25 @@ static void on_login_button_clicked(GtkWidget* widget, gpointer data) {
     print_success("Authentification réussie");
 }
 
-static void on_cancel_button_clicked(GtkWidget* widget, gpointer data) {
+void on_cancel_button_clicked(GtkWidget* widget, gpointer data) {
     gtk_main_quit();
 }
 
-static void on_login_window_destroy(GtkWidget* widget, gpointer data) {
+void on_login_window_destroy(GtkWidget* widget, gpointer data) {
     gtk_main_quit();
 }
 
 // ============= Main Window Callbacks =============
 
-static void on_main_window_destroy(GtkWidget* widget, gpointer data) {
+void on_main_window_destroy(GtkWidget* widget, gpointer data) {
     gtk_main_quit();
 }
 
-static void on_quit_menu(GtkWidget* widget, gpointer data) {
+void on_quit_menu(GtkWidget* widget, gpointer data) {
     gtk_main_quit();
 }
 
-static void on_logout_menu(GtkWidget* widget, gpointer data) {
+void on_logout_menu(GtkWidget* widget, gpointer data) {
     gtk_widget_hide(GTK_WIDGET(main_window));
     
     // Clear fields
@@ -160,7 +160,7 @@ static void on_logout_menu(GtkWidget* widget, gpointer data) {
     print_info("Déconnexion réussie");
 }
 
-static void on_about_menu(GtkWidget* widget, gpointer data) {
+void on_about_menu(GtkWidget* widget, gpointer data) {
     GtkDialog* about = GTK_DIALOG(
         gtk_message_dialog_new(
             main_window,
@@ -180,37 +180,37 @@ static void on_about_menu(GtkWidget* widget, gpointer data) {
 
 // ============= Module Menu Handlers =============
 
-static void on_menu_membres(GtkWidget* widget, gpointer data) {
+void on_menu_membres(GtkWidget* widget, gpointer data) {
     print_info("Accès au module Membres");
     GtkNotebook* notebook = GTK_NOTEBOOK(gtk_builder_get_object(builder, "content_notebook"));
     gtk_notebook_set_current_page(notebook, 1); // Membres tab is at index 1
 }
 
-static void on_menu_centres(GtkWidget* widget, gpointer data) {
+void on_menu_centres(GtkWidget* widget, gpointer data) {
     print_info("Accès au module Centres");
     GtkNotebook* notebook = GTK_NOTEBOOK(gtk_builder_get_object(builder, "content_notebook"));
     gtk_notebook_set_current_page(notebook, 2);
 }
 
-static void on_menu_courses(GtkWidget* widget, gpointer data) {
+void on_menu_courses(GtkWidget* widget, gpointer data) {
     print_info("Accès au module Cours");
     GtkNotebook* notebook = GTK_NOTEBOOK(gtk_builder_get_object(builder, "content_notebook"));
     gtk_notebook_set_current_page(notebook, 3);
 }
 
-static void on_menu_trainers(GtkWidget* widget, gpointer data) {
+void on_menu_trainers(GtkWidget* widget, gpointer data) {
     print_info("Accès au module Entraîneurs");
     GtkNotebook* notebook = GTK_NOTEBOOK(gtk_builder_get_object(builder, "content_notebook"));
     gtk_notebook_set_current_page(notebook, 4);
 }
 
-static void on_menu_equipment(GtkWidget* widget, gpointer data) {
+void on_menu_equipment(GtkWidget* widget, gpointer data) {
     print_info("Accès au module Équipements");
     GtkNotebook* notebook = GTK_NOTEBOOK(gtk_builder_get_object(builder, "content_notebook"));
     gtk_notebook_set_current_page(notebook, 5);
 }
 
-static void on_menu_events(GtkWidget* widget, gpointer data) {
+void on_menu_events(GtkWidget* widget, gpointer data) {
     print_info("Accès au module Événements");
     GtkNotebook* notebook = GTK_NOTEBOOK(gtk_builder_get_object(builder, "content_notebook"));
     gtk_notebook_set_current_page(notebook, 6);
@@ -219,119 +219,119 @@ static void on_menu_events(GtkWidget* widget, gpointer data) {
 // ============= Module CRUD Stubs =============
 
 // Membres
-static void on_membres_add(GtkWidget* widget, gpointer data) {
+void on_membres_add(GtkWidget* widget, gpointer data) {
     print_info("Ajouter membre");
     ajouter_membre();
 }
 
-static void on_membres_edit(GtkWidget* widget, gpointer data) {
+void on_membres_edit(GtkWidget* widget, gpointer data) {
     print_info("Modifier membre");
 }
 
-static void on_membres_delete(GtkWidget* widget, gpointer data) {
+void on_membres_delete(GtkWidget* widget, gpointer data) {
     print_info("Supprimer membre");
 }
 
-static void on_membres_search(GtkWidget* widget, gpointer data) {
+void on_membres_search(GtkWidget* widget, gpointer data) {
     print_info("Rechercher membre");
 }
 
-static void on_membres_refresh(GtkWidget* widget, gpointer data) {
+void on_membres_refresh(GtkWidget* widget, gpointer data) {
     print_info("Rafraîchir membres");
     afficher_tous_membres();
 }
 
 // Centres
-static void on_centres_add(GtkWidget* widget, gpointer data) {
+void on_centres_add(GtkWidget* widget, gpointer data) {
     print_info("Ajouter centre");
     ajouter_centre();
 }
 
-static void on_centres_edit(GtkWidget* widget, gpointer data) {
+void on_centres_edit(GtkWidget* widget, gpointer data) {
     print_info("Modifier centre");
 }
 
-static void on_centres_delete(GtkWidget* widget, gpointer data) {
+void on_centres_delete(GtkWidget* widget, gpointer data) {
     print_info("Supprimer centre");
 }
 
-static void on_centres_refresh(GtkWidget* widget, gpointer data) {
+void on_centres_refresh(GtkWidget* widget, gpointer data) {
     print_info("Rafraîchir centres");
     afficher_tous_centres();
 }
 
 // Cours
-static void on_cours_add(GtkWidget* widget, gpointer data) {
+void on_cours_add(GtkWidget* widget, gpointer data) {
     print_info("Ajouter cours");
     ajouter_cours();
 }
 
-static void on_cours_edit(GtkWidget* widget, gpointer data) {
+void on_cours_edit(GtkWidget* widget, gpointer data) {
     print_info("Modifier cours");
 }
 
-static void on_cours_delete(GtkWidget* widget, gpointer data) {
+void on_cours_delete(GtkWidget* widget, gpointer data) {
     print_info("Supprimer cours");
 }
 
-static void on_cours_refresh(GtkWidget* widget, gpointer data) {
+void on_cours_refresh(GtkWidget* widget, gpointer data) {
     print_info("Rafraîchir cours");
     afficher_tous_cours();
 }
 
 // Trainers
-static void on_trainers_add(GtkWidget* widget, gpointer data) {
+void on_trainers_add(GtkWidget* widget, gpointer data) {
     print_info("Ajouter entraîneur");
     ajouter_entraineur();
 }
 
-static void on_trainers_edit(GtkWidget* widget, gpointer data) {
+void on_trainers_edit(GtkWidget* widget, gpointer data) {
     print_info("Modifier entraîneur");
 }
 
-static void on_trainers_delete(GtkWidget* widget, gpointer data) {
+void on_trainers_delete(GtkWidget* widget, gpointer data) {
     print_info("Supprimer entraîneur");
 }
 
-static void on_trainers_refresh(GtkWidget* widget, gpointer data) {
+void on_trainers_refresh(GtkWidget* widget, gpointer data) {
     print_info("Rafraîchir entraîneurs");
     afficher_tous_entraineurs();
 }
 
 // Equipment
-static void on_equipment_add(GtkWidget* widget, gpointer data) {
+void on_equipment_add(GtkWidget* widget, gpointer data) {
     print_info("Ajouter équipement");
     ajouter_equipement();
 }
 
-static void on_equipment_edit(GtkWidget* widget, gpointer data) {
+void on_equipment_edit(GtkWidget* widget, gpointer data) {
     print_info("Modifier équipement");
 }
 
-static void on_equipment_delete(GtkWidget* widget, gpointer data) {
+void on_equipment_delete(GtkWidget* widget, gpointer data) {
     print_info("Supprimer équipement");
 }
 
-static void on_equipment_refresh(GtkWidget* widget, gpointer data) {
+void on_equipment_refresh(GtkWidget* widget, gpointer data) {
     print_info("Rafraîchir équipements");
     afficher_tous_equipements();
 }
 
 // Events
-static void on_events_add(GtkWidget* widget, gpointer data) {
+void on_events_add(GtkWidget* widget, gpointer data) {
     print_info("Ajouter événement");
     ajouter_evenement();
 }
 
-static void on_events_edit(GtkWidget* widget, gpointer data) {
+void on_events_edit(GtkWidget* widget, gpointer data) {
     print_info("Modifier événement");
 }
 
-static void on_events_delete(GtkWidget* widget, gpointer data) {
+void on_events_delete(GtkWidget* widget, gpointer data) {
     print_info("Supprimer événement");
 }
 
-static void on_events_refresh(GtkWidget* widget, gpointer data) {
+void on_events_refresh(GtkWidget* widget, gpointer data) {
     print_info("Rafraîchir événements");
     afficher_tous_evenements();
 }

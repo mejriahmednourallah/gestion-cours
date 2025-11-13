@@ -362,6 +362,13 @@ static gboolean setup_ui() {
         return FALSE;
     }
     
+    // Initialize role combo box with default selection (Membre = index 1)
+    GtkComboBoxText* role_combo = GTK_COMBO_BOX_TEXT(gtk_builder_get_object(builder, "role_combo"));
+    if (role_combo) {
+        gtk_combo_box_set_active(GTK_COMBO_BOX(role_combo), 1); // Select "Membre" by default
+        print_info("Rôle par défaut: Membre");
+    }
+    
     return TRUE;
 }
 

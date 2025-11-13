@@ -1,0 +1,4 @@
+1,Tapis de Yoga,Yoga,50,1,1
+2,Altères,Musculation,100,1,1
+3,Rameur,Cardio,10,1,1
+4,Vélo Statique,Cardio,20,1,2

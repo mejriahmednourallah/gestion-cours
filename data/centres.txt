@@ -1,0 +1,3 @@
+1,Centre Fitness Paris,123 Rue de la Paix Paris 75000,0140000001,500
+2,Centre Yoga Marseille,456 Avenue du Prado Marseille 13000,0491111111,300
+3,Centre Musculation Lyon,789 Rue de la République Lyon 69000,0478222222,400

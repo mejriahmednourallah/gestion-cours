@@ -1,0 +1,3 @@
+1,Dupont,Jean,jean.dupont@example.com,0612345678,2024-01-15,1
+2,Martin,Marie,marie.martin@example.com,0698765432,2024-02-20,1
+3,Bernard,Pierre,pierre.bernard@example.com,0645678901,2024-03-10,1

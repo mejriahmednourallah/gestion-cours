@@ -74,9 +74,9 @@
               <object class="GtkComboBoxText" id="role_combo">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <item>Administrateur</item>
-                <item>Membre</item>
-                <item>Entraîneur</item>
+                <items>Administrateur
+Membre
+Entraîneur</items>
               </object>
               <packing>
                 <property name="expand">False</property>

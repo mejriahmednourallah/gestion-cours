@@ -576,9 +576,8 @@ Utilisez le menu "Modules" pour accéder aux différentes sections de l'applicat
                         <child internal-child="selection">
                           <object class="GtkTreeSelection" id="membres_selection"/>
                         </child>
-                        <columns>
-                          <column>
-                            <object class="GtkTreeViewColumn" id="col_id">
+                        <child>
+                          <object class="GtkTreeViewColumn" id="col_id">
                               <property name="title">ID</property>
                               <child>
                                 <object class="GtkCellRendererText" id="cell_id"/>
@@ -587,9 +586,9 @@ Utilisez le menu "Modules" pour accéder aux différentes sections de l'applicat
                                 </attributes>
                               </child>
                             </object>
-                          </column>
-                          <column>
-                            <object class="GtkTreeViewColumn" id="col_nom">
+                          </child>
+                        <child>
+                          <object class="GtkTreeViewColumn" id="col_nom">
                               <property name="title">Nom</property>
                               <child>
                                 <object class="GtkCellRendererText" id="cell_nom"/>
@@ -598,9 +597,9 @@ Utilisez le menu "Modules" pour accéder aux différentes sections de l'applicat
                                 </attributes>
                               </child>
                             </object>
-                          </column>
-                          <column>
-                            <object class="GtkTreeViewColumn" id="col_prenom">
+                          </child>
+                        <child>
+                          <object class="GtkTreeViewColumn" id="col_prenom">
                               <property name="title">Prénom</property>
                               <child>
                                 <object class="GtkCellRendererText" id="cell_prenom"/>
@@ -609,9 +608,9 @@ Utilisez le menu "Modules" pour accéder aux différentes sections de l'applicat
                                 </attributes>
                               </child>
                             </object>
-                          </column>
-                          <column>
-                            <object class="GtkTreeViewColumn" id="col_email">
+                          </child>
+                        <child>
+                          <object class="GtkTreeViewColumn" id="col_email">
                               <property name="title">Email</property>
                               <child>
                                 <object class="GtkCellRendererText" id="cell_email"/>
@@ -620,9 +619,9 @@ Utilisez le menu "Modules" pour accéder aux différentes sections de l'applicat
                                 </attributes>
                               </child>
                             </object>
-                          </column>
-                          <column>
-                            <object class="GtkTreeViewColumn" id="col_telephone">
+                          </child>
+                        <child>
+                          <object class="GtkTreeViewColumn" id="col_telephone">
                               <property name="title">Téléphone</property>
                               <child>
                                 <object class="GtkCellRendererText" id="cell_telephone"/>
@@ -631,9 +630,9 @@ Utilisez le menu "Modules" pour accéder aux différentes sections de l'applicat
                                 </attributes>
                               </child>
                             </object>
-                          </column>
-                          <column>
-                            <object class="GtkTreeViewColumn" id="col_date">
+                          </child>
+                        <child>
+                          <object class="GtkTreeViewColumn" id="col_date">
                               <property name="title">Inscription</property>
                               <child>
                                 <object class="GtkCellRendererText" id="cell_date"/>
@@ -642,9 +641,9 @@ Utilisez le menu "Modules" pour accéder aux différentes sections de l'applicat
                                 </attributes>
                               </child>
                             </object>
-                          </column>
-                          <column>
-                            <object class="GtkTreeViewColumn" id="col_actif">
+                          </child>
+                        <child>
+                          <object class="GtkTreeViewColumn" id="col_actif">
                               <property name="title">Actif</property>
                               <child>
                                 <object class="GtkCellRendererText" id="cell_actif"/>
@@ -653,8 +652,7 @@ Utilisez le menu "Modules" pour accéder aux différentes sections de l'applicat
                                 </attributes>
                               </child>
                             </object>
-                          </column>
-                        </columns>
+                          </child>
                       </object>
                     </child>
                   </object>

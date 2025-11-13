@@ -54,6 +54,22 @@ static void on_login_button_clicked(GtkWidget* widget, gpointer data) {
     const char* password = gtk_entry_get_text(password_entry);
     gint role_index = gtk_combo_box_get_active(GTK_COMBO_BOX(role_combo));
     
+    // Check if a role is selected
+    if (role_index < 0) {
+        GtkDialog* error = GTK_DIALOG(
+            gtk_message_dialog_new(
+                login_window,
+                GTK_DIALOG_DESTROY_WITH_PARENT,
+                GTK_MESSAGE_ERROR,
+                GTK_BUTTONS_OK,
+                "Veuillez sélectionner un rôle"
+            )
+        );
+        gtk_dialog_run(error);
+        gtk_widget_destroy(GTK_WIDGET(error));
+        return;
+    }
+    
     UserRole selected_role = (UserRole)role_index;
     
     if (strlen(username) == 0 || strlen(password) == 0) {

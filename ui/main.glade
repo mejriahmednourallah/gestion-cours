@@ -470,25 +470,337 @@
                   </packing>
                 </child>
                 <child>
+                  <object class="GtkLabel" id="welcome_subtitle">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="label">Système de Gestion des Centres Sportifs</property>
+                    <attributes>
+                      <attribute name="size" value="14000"/>
+                      <attribute name="style" value="italic"/>
+                    </attributes>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                
+                <!-- Statistics Grid -->
+                <child>
+                  <object class="GtkFrame" id="stats_frame">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="label-xalign">0.5</property>
+                    <property name="shadow-type">in</property>
+                    <child>
+                      <object class="GtkGrid" id="stats_grid">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="margin">20</property>
+                        <property name="row-spacing">15</property>
+                        <property name="column-spacing">30</property>
+                        <property name="row-homogeneous">True</property>
+                        <property name="column-homogeneous">True</property>
+                        
+                        <!-- Stat: Membres -->
+                        <child>
+                          <object class="GtkBox">
+                            <property name="visible">True</property>
+                            <property name="orientation">vertical</property>
+                            <property name="spacing">5</property>
+                            <child>
+                              <object class="GtkLabel">
+                                <property name="visible">True</property>
+                                <property name="label">👥 MEMBRES</property>
+                                <attributes>
+                                  <attribute name="weight" value="bold"/>
+                                  <attribute name="size" value="12000"/>
+                                </attributes>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="stat_membres">
+                                <property name="visible">True</property>
+                                <property name="label">15</property>
+                                <attributes>
+                                  <attribute name="size" value="20000"/>
+                                  <attribute name="weight" value="bold"/>
+                                  <attribute name="foreground" value="#2196F3"/>
+                                </attributes>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkLabel">
+                                <property name="visible">True</property>
+                                <property name="label">adhérents actifs</property>
+                                <attributes>
+                                  <attribute name="size" value="9000"/>
+                                </attributes>
+                              </object>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="left-attach">0</property>
+                            <property name="top-attach">0</property>
+                          </packing>
+                        </child>
+                        
+                        <!-- Stat: Entraîneurs -->
+                        <child>
+                          <object class="GtkBox">
+                            <property name="visible">True</property>
+                            <property name="orientation">vertical</property>
+                            <property name="spacing">5</property>
+                            <child>
+                              <object class="GtkLabel">
+                                <property name="visible">True</property>
+                                <property name="label">🏋️ ENTRAÎNEURS</property>
+                                <attributes>
+                                  <attribute name="weight" value="bold"/>
+                                  <attribute name="size" value="12000"/>
+                                </attributes>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="stat_entraineurs">
+                                <property name="visible">True</property>
+                                <property name="label">8</property>
+                                <attributes>
+                                  <attribute name="size" value="20000"/>
+                                  <attribute name="weight" value="bold"/>
+                                  <attribute name="foreground" value="#4CAF50"/>
+                                </attributes>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkLabel">
+                                <property name="visible">True</property>
+                                <property name="label">professionnels</property>
+                                <attributes>
+                                  <attribute name="size" value="9000"/>
+                                </attributes>
+                              </object>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="left-attach">1</property>
+                            <property name="top-attach">0</property>
+                          </packing>
+                        </child>
+                        
+                        <!-- Stat: Cours -->
+                        <child>
+                          <object class="GtkBox">
+                            <property name="visible">True</property>
+                            <property name="orientation">vertical</property>
+                            <property name="spacing">5</property>
+                            <child>
+                              <object class="GtkLabel">
+                                <property name="visible">True</property>
+                                <property name="label">📚 COURS</property>
+                                <attributes>
+                                  <attribute name="weight" value="bold"/>
+                                  <attribute name="size" value="12000"/>
+                                </attributes>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="stat_cours">
+                                <property name="visible">True</property>
+                                <property name="label">10</property>
+                                <attributes>
+                                  <attribute name="size" value="20000"/>
+                                  <attribute name="weight" value="bold"/>
+                                  <attribute name="foreground" value="#FF9800"/>
+                                </attributes>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkLabel">
+                                <property name="visible">True</property>
+                                <property name="label">cours disponibles</property>
+                                <attributes>
+                                  <attribute name="size" value="9000"/>
+                                </attributes>
+                              </object>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="left-attach">2</property>
+                            <property name="top-attach">0</property>
+                          </packing>
+                        </child>
+                        
+                        <!-- Stat: Centres -->
+                        <child>
+                          <object class="GtkBox">
+                            <property name="visible">True</property>
+                            <property name="orientation">vertical</property>
+                            <property name="spacing">5</property>
+                            <child>
+                              <object class="GtkLabel">
+                                <property name="visible">True</property>
+                                <property name="label">🏢 CENTRES</property>
+                                <attributes>
+                                  <attribute name="weight" value="bold"/>
+                                  <attribute name="size" value="12000"/>
+                                </attributes>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="stat_centres">
+                                <property name="visible">True</property>
+                                <property name="label">5</property>
+                                <attributes>
+                                  <attribute name="size" value="20000"/>
+                                  <attribute name="weight" value="bold"/>
+                                  <attribute name="foreground" value="#9C27B0"/>
+                                </attributes>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkLabel">
+                                <property name="visible">True</property>
+                                <property name="label">sites sportifs</property>
+                                <attributes>
+                                  <attribute name="size" value="9000"/>
+                                </attributes>
+                              </object>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="left-attach">0</property>
+                            <property name="top-attach">1</property>
+                          </packing>
+                        </child>
+                        
+                        <!-- Stat: Équipements -->
+                        <child>
+                          <object class="GtkBox">
+                            <property name="visible">True</property>
+                            <property name="orientation">vertical</property>
+                            <property name="spacing">5</property>
+                            <child>
+                              <object class="GtkLabel">
+                                <property name="visible">True</property>
+                                <property name="label">🎽 ÉQUIPEMENTS</property>
+                                <attributes>
+                                  <attribute name="weight" value="bold"/>
+                                  <attribute name="size" value="12000"/>
+                                </attributes>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="stat_equipements">
+                                <property name="visible">True</property>
+                                <property name="label">10</property>
+                                <attributes>
+                                  <attribute name="size" value="20000"/>
+                                  <attribute name="weight" value="bold"/>
+                                  <attribute name="foreground" value="#F44336"/>
+                                </attributes>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkLabel">
+                                <property name="visible">True</property>
+                                <property name="label">types d'équipement</property>
+                                <attributes>
+                                  <attribute name="size" value="9000"/>
+                                </attributes>
+                              </object>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="left-attach">1</property>
+                            <property name="top-attach">1</property>
+                          </packing>
+                        </child>
+                        
+                        <!-- Stat: Événements -->
+                        <child>
+                          <object class="GtkBox">
+                            <property name="visible">True</property>
+                            <property name="orientation">vertical</property>
+                            <property name="spacing">5</property>
+                            <child>
+                              <object class="GtkLabel">
+                                <property name="visible">True</property>
+                                <property name="label">📅 ÉVÉNEMENTS</property>
+                                <attributes>
+                                  <attribute name="weight" value="bold"/>
+                                  <attribute name="size" value="12000"/>
+                                </attributes>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="stat_evenements">
+                                <property name="visible">True</property>
+                                <property name="label">6</property>
+                                <attributes>
+                                  <attribute name="size" value="20000"/>
+                                  <attribute name="weight" value="bold"/>
+                                  <attribute name="foreground" value="#00BCD4"/>
+                                </attributes>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkLabel">
+                                <property name="visible">True</property>
+                                <property name="label">événements prévus</property>
+                                <attributes>
+                                  <attribute name="size" value="9000"/>
+                                </attributes>
+                              </object>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="left-attach">2</property>
+                            <property name="top-attach">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                    </child>
+                    <child type="label">
+                      <object class="GtkLabel">
+                        <property name="visible">True</property>
+                        <property name="label"> 📊 Statistiques du Système </property>
+                        <attributes>
+                          <attribute name="weight" value="bold"/>
+                          <attribute name="size" value="12000"/>
+                        </attributes>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">2</property>
+                  </packing>
+                </child>
+                
+                <!-- Quick Actions -->
+                <child>
                   <object class="GtkLabel" id="welcome_text">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
-                    <property name="label">Application de gestion des centres sportifs
+                    <property name="label">
 
-Utilisez le menu "Modules" pour accéder aux différentes sections de l'application:
+💡 Utilisez le menu "Modules" ci-dessus pour accéder aux différentes sections:
 • Membres - Gérer les adhérents
-• Centres - Gérer les centres sportifs
-• Cours - Gérer les cours sportifs
+• Centres - Gérer les centres sportifs  
+• Cours - Gérer les cours et planning
 • Entraîneurs - Gérer le personnel
 • Équipements - Gérer l'inventaire
-• Événements - Gérer les événements spéciaux</property>
+• Événements - Organiser des compétitions</property>
                     <property name="wrap">True</property>
                     <property name="justify">center</property>
                   </object>
                   <packing>
                     <property name="expand">True</property>
                     <property name="fill">True</property>
-                    <property name="position">1</property>
+                    <property name="position">3</property>
                   </packing>
                 </child>
               </object>

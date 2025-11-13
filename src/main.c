@@ -108,6 +108,8 @@ void on_login_button_clicked(GtkWidget* widget, gpointer data) {
     strncpy(current_user, username, sizeof(current_user) - 1);
     current_role = selected_role;
     
+    print_info("Authentification réussie - Chargement de l'interface principale...");
+    
     // Update labels
     GtkLabel* user_label = GTK_LABEL(gtk_builder_get_object(builder, "current_user_label"));
     GtkLabel* role_label = GTK_LABEL(gtk_builder_get_object(builder, "current_role_label"));
@@ -119,14 +121,21 @@ void on_login_button_clicked(GtkWidget* widget, gpointer data) {
     snprintf(user_text, sizeof(user_text), "Utilisateur: %s", current_user);
     snprintf(role_text, sizeof(role_text), "Rôle: %s", role_names[current_role]);
     
-    gtk_label_set_text(user_label, user_text);
-    gtk_label_set_text(role_label, role_text);
+    if (user_label) {
+        gtk_label_set_text(user_label, user_text);
+        print_info("Label utilisateur mis à jour");
+    }
+    if (role_label) {
+        gtk_label_set_text(role_label, role_text);
+        print_info("Label rôle mis à jour");
+    }
     
-    // Hide login window and show main window
+    // Hide login window and show main window with all children
     gtk_widget_hide(GTK_WIDGET(login_window));
-    gtk_widget_show(GTK_WIDGET(main_window));
+    print_info("Fenêtre de login masquée");
     
-    print_success("Authentification réussie");
+    gtk_widget_show_all(GTK_WIDGET(main_window));
+    print_success("Fenêtre principale affichée - Bienvenue!");
 }
 
 void on_cancel_button_clicked(GtkWidget* widget, gpointer data) {

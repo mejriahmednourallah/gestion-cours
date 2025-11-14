@@ -2,6 +2,77 @@
 <interface>
   <requires lib="gtk+" version="3.0"/>
   
+  <!-- ============= LIST STORES ============= -->
+  <object class="GtkListStore" id="membres_liststore">
+    <columns>
+      <column type="gint"/>    <!-- 0: ID -->
+      <column type="gchararray"/> <!-- 1: Nom -->
+      <column type="gchararray"/> <!-- 2: Prénom -->
+      <column type="gchararray"/> <!-- 3: Email -->
+      <column type="gchararray"/> <!-- 4: Téléphone -->
+      <column type="gchararray"/> <!-- 5: Date Inscription -->
+      <column type="gchararray"/> <!-- 6: Actif -->
+    </columns>
+  </object>
+  
+  <object class="GtkListStore" id="centres_liststore">
+    <columns>
+      <column type="gint"/>    <!-- 0: ID -->
+      <column type="gchararray"/> <!-- 1: Nom -->
+      <column type="gchararray"/> <!-- 2: Adresse -->
+      <column type="gchararray"/> <!-- 3: Téléphone -->
+      <column type="gint"/>    <!-- 4: Capacité -->
+    </columns>
+  </object>
+  
+  <object class="GtkListStore" id="cours_liststore">
+    <columns>
+      <column type="gint"/>    <!-- 0: ID -->
+      <column type="gchararray"/> <!-- 1: Nom -->
+      <column type="gchararray"/> <!-- 2: Type -->
+      <column type="gchararray"/> <!-- 3: Horaire -->
+      <column type="gint"/>    <!-- 4: Entraineur ID -->
+      <column type="gint"/>    <!-- 5: Capacité Max -->
+      <column type="gint"/>    <!-- 6: Inscrits -->
+      <column type="gint"/>    <!-- 7: Centre ID -->
+    </columns>
+  </object>
+  
+  <object class="GtkListStore" id="entraineurs_liststore">
+    <columns>
+      <column type="gint"/>    <!-- 0: ID -->
+      <column type="gchararray"/> <!-- 1: Nom -->
+      <column type="gchararray"/> <!-- 2: Prénom -->
+      <column type="gchararray"/> <!-- 3: Spécialité -->
+      <column type="gchararray"/> <!-- 4: Téléphone -->
+      <column type="gint"/>    <!-- 5: Centre ID -->
+      <column type="gint"/>    <!-- 6: Disponible -->
+    </columns>
+  </object>
+  
+  <object class="GtkListStore" id="equipements_liststore">
+    <columns>
+      <column type="gint"/>    <!-- 0: ID -->
+      <column type="gchararray"/> <!-- 1: Nom -->
+      <column type="gchararray"/> <!-- 2: Type -->
+      <column type="gint"/>    <!-- 3: Quantité -->
+      <column type="gint"/>    <!-- 4: Centre ID -->
+      <column type="gint"/>    <!-- 5: Disponible -->
+    </columns>
+  </object>
+  
+  <object class="GtkListStore" id="evenements_liststore">
+    <columns>
+      <column type="gint"/>    <!-- 0: ID -->
+      <column type="gchararray"/> <!-- 1: Nom -->
+      <column type="gchararray"/> <!-- 2: Description -->
+      <column type="gchararray"/> <!-- 3: Date -->
+      <column type="gint"/>    <!-- 4: Centre ID -->
+      <column type="gint"/>    <!-- 5: Capacité Max -->
+      <column type="gint"/>    <!-- 6: Inscrits -->
+    </columns>
+  </object>
+  
   <!-- ============= LOGIN WINDOW ============= -->
   <object class="GtkWindow" id="login_window">
     <property name="type">toplevel</property>
@@ -888,6 +959,7 @@
                       <object class="GtkTreeView" id="membres_treeview">
                         <property name="visible">True</property>
                         <property name="can-focus">True</property>
+                        <property name="model">membres_liststore</property>
                         <child internal-child="selection">
                           <object class="GtkTreeSelection" id="membres_selection"/>
                         </child>
@@ -1147,6 +1219,7 @@
                       <object class="GtkTreeView" id="centres_treeview">
                         <property name="visible">True</property>
                         <property name="can-focus">True</property>
+                        <property name="model">centres_liststore</property>
                         <child internal-child="selection">
                           <object class="GtkTreeSelection" id="centres_selection"/>
                         </child>
@@ -1258,6 +1331,7 @@
                       <object class="GtkTreeView" id="cours_treeview">
                         <property name="visible">True</property>
                         <property name="can-focus">True</property>
+                        <property name="model">cours_liststore</property>
                         <child internal-child="selection">
                           <object class="GtkTreeSelection" id="cours_selection"/>
                         </child>

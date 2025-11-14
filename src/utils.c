@@ -198,6 +198,10 @@ void print_error(const char* message) {
     fprintf(stderr, "[ERREUR] %s\n", message);
 }
 
+void print_warning(const char* message) {
+    fprintf(stdout, "[ATTENTION] %s\n", message);
+}
+
 void print_success(const char* message) {
     fprintf(stdout, "[SUCCÈS] %s\n", message);
 }

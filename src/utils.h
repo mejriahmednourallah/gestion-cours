@@ -42,6 +42,7 @@ int id_exists(const char* filename, int id, int id_column);
 
 // Error handling
 void print_error(const char* message);
+void print_warning(const char* message);
 void print_success(const char* message);
 void print_info(const char* message);
 

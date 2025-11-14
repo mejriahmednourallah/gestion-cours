@@ -263,10 +263,11 @@ void on_menu_membres(GtkWidget* widget, gpointer data) {
             if (btn_delete) gtk_widget_set_visible(btn_delete, FALSE);
         }
         
-        // Charger les données au démarrage
+        gtk_widget_show_all(GTK_WIDGET(dialog));
+        
+        // Charger les données après affichage
         on_membres_refresh(NULL, NULL);
         
-        gtk_widget_show_all(GTK_WIDGET(dialog));
         gtk_dialog_run(dialog);
         gtk_widget_destroy(GTK_WIDGET(dialog));
     } else {
@@ -313,8 +314,8 @@ void on_menu_centres(GtkWidget* widget, gpointer data) {
             if (btn_delete) gtk_widget_set_visible(btn_delete, FALSE);
         }
         
-        on_centres_refresh(NULL, NULL);
         gtk_widget_show_all(GTK_WIDGET(dialog));
+        on_centres_refresh(NULL, NULL);
         gtk_dialog_run(dialog);
         gtk_widget_destroy(GTK_WIDGET(dialog));
     } else {
@@ -372,8 +373,8 @@ void on_menu_courses(GtkWidget* widget, gpointer data) {
             if (btn_join) gtk_widget_set_visible(btn_join, TRUE);
         }
         
-        on_cours_refresh(NULL, NULL);
         gtk_widget_show_all(GTK_WIDGET(dialog));
+        on_cours_refresh(NULL, NULL);
         gtk_dialog_run(dialog);
         gtk_widget_destroy(GTK_WIDGET(dialog));
     } else {
@@ -405,10 +406,11 @@ void on_menu_trainers(GtkWidget* widget, gpointer data) {
         GtkDialog* dialog = GTK_DIALOG(gtk_builder_get_object(global_entraineurs_builder, "entraineurs_dialog"));
         gtk_builder_connect_signals(global_entraineurs_builder, NULL);
         
-        // Charger les données immédiatement
+        gtk_widget_show_all(GTK_WIDGET(dialog));
+        
+        // Charger les données après affichage
         on_trainers_refresh(NULL, NULL);
         
-        gtk_widget_show_all(GTK_WIDGET(dialog));
         gtk_dialog_run(dialog);
         gtk_widget_destroy(GTK_WIDGET(dialog));
     } else {
@@ -458,10 +460,11 @@ void on_menu_equipment(GtkWidget* widget, gpointer data) {
             if (btn_reserve) gtk_widget_set_visible(btn_reserve, TRUE);
         }
         
-        // Charger les données immédiatement
+        gtk_widget_show_all(GTK_WIDGET(dialog));
+        
+        // Charger les données après affichage
         on_equipment_refresh(NULL, NULL);
         
-        gtk_widget_show_all(GTK_WIDGET(dialog));
         gtk_dialog_run(dialog);
         gtk_widget_destroy(GTK_WIDGET(dialog));
     } else {
@@ -509,10 +512,11 @@ void on_menu_events(GtkWidget* widget, gpointer data) {
             if (btn_enroll) gtk_widget_set_visible(btn_enroll, TRUE);
         }
         
-        // Charger les données immédiatement
+        gtk_widget_show_all(GTK_WIDGET(dialog));
+        
+        // Charger les données après affichage
         on_events_refresh(NULL, NULL);
         
-        gtk_widget_show_all(GTK_WIDGET(dialog));
         gtk_dialog_run(dialog);
         gtk_widget_destroy(GTK_WIDGET(dialog));
     } else {
@@ -909,12 +913,23 @@ void on_centres_delete(GtkWidget* widget, gpointer data) {
 
 void on_centres_refresh(GtkWidget* widget, gpointer data) {
     (void)widget; (void)data;
-    if (!global_centres_builder) return;
+    if (!global_centres_builder) {
+        print_error("Builder non disponible");
+        return;
+    }
     
     Centre* centres = NULL;
     int count = charger_centres(&centres);
+    printf("[DEBUG] Chargé %d centres\n", count);
     
-    GtkListStore* store = GTK_LIST_STORE(gtk_builder_get_object(global_centres_builder, "centres_liststore"));
+    GObject* obj = gtk_builder_get_object(global_centres_builder, "centres_liststore");
+    if (!obj) {
+        print_error("ListStore 'centres_liststore' introuvable");
+        free(centres);
+        return;
+    }
+    
+    GtkListStore* store = GTK_LIST_STORE(obj);
     gtk_list_store_clear(store);
     
     for (int i = 0; i < count; i++) {
@@ -930,7 +945,9 @@ void on_centres_refresh(GtkWidget* widget, gpointer data) {
     }
     
     free(centres);
-    print_info("Centres chargés");
+    char msg[100];
+    snprintf(msg, sizeof(msg), "Centres chargés: %d", count);
+    print_info(msg);
 }
 
 // Cours

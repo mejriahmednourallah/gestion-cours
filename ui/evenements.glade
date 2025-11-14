@@ -34,16 +34,19 @@
               <packing><property name="expand">True</property></packing>
             </child>
             <child>
-              <object class="GtkButton"><property name="label">➕ Ajouter</property><property name="visible">True</property><signal name="clicked" handler="on_events_add"/></object>
+              <object class="GtkButton" id="events_btn_add"><property name="label">➥ Ajouter</property><property name="visible">True</property><signal name="clicked" handler="on_events_add"/></object>
             </child>
             <child>
-              <object class="GtkButton"><property name="label">✏️ Modifier</property><property name="visible">True</property><signal name="clicked" handler="on_events_edit"/></object>
+              <object class="GtkButton" id="events_btn_edit"><property name="label">✏️ Modifier</property><property name="visible">True</property><signal name="clicked" handler="on_events_edit"/></object>
             </child>
             <child>
-              <object class="GtkButton"><property name="label">🗑️ Supprimer</property><property name="visible">True</property><signal name="clicked" handler="on_events_delete"/></object>
+              <object class="GtkButton" id="events_btn_delete"><property name="label">🗑️ Supprimer</property><property name="visible">True</property><signal name="clicked" handler="on_events_delete"/></object>
             </child>
             <child>
-              <object class="GtkButton"><property name="label">🔄</property><property name="visible">True</property><signal name="clicked" handler="on_events_refresh"/></object>
+              <object class="GtkButton" id="events_btn_enroll"><property name="label">✅ S'inscrire</property><property name="visible">False</property><signal name="clicked" handler="on_events_enroll"/></object>
+            </child>
+            <child>
+              <object class="GtkButton" id="events_btn_refresh"><property name="label">🔄</property><property name="visible">True</property><signal name="clicked" handler="on_events_refresh"/></object>
             </child>
           </object>
         </child>

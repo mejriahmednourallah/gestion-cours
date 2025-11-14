@@ -440,6 +440,24 @@ void on_menu_equipment(GtkWidget* widget, gpointer data) {
         GtkDialog* dialog = GTK_DIALOG(gtk_builder_get_object(global_equipements_builder, "equipements_dialog"));
         gtk_builder_connect_signals(global_equipements_builder, NULL);
         
+        // Masquer/afficher boutons selon rôle
+        GtkWidget* btn_add = GTK_WIDGET(gtk_builder_get_object(global_equipements_builder, "equipment_btn_add"));
+        GtkWidget* btn_edit = GTK_WIDGET(gtk_builder_get_object(global_equipements_builder, "equipment_btn_edit"));
+        GtkWidget* btn_delete = GTK_WIDGET(gtk_builder_get_object(global_equipements_builder, "equipment_btn_delete"));
+        GtkWidget* btn_reserve = GTK_WIDGET(gtk_builder_get_object(global_equipements_builder, "equipment_btn_reserve"));
+        
+        if (current_role == ROLE_ADMIN) {
+            if (btn_add) gtk_widget_set_visible(btn_add, TRUE);
+            if (btn_edit) gtk_widget_set_visible(btn_edit, TRUE);
+            if (btn_delete) gtk_widget_set_visible(btn_delete, TRUE);
+            if (btn_reserve) gtk_widget_set_visible(btn_reserve, FALSE);
+        } else if (current_role == ROLE_TRAINER) {
+            if (btn_add) gtk_widget_set_visible(btn_add, FALSE);
+            if (btn_edit) gtk_widget_set_visible(btn_edit, FALSE);
+            if (btn_delete) gtk_widget_set_visible(btn_delete, FALSE);
+            if (btn_reserve) gtk_widget_set_visible(btn_reserve, TRUE);
+        }
+        
         // Charger les données immédiatement
         on_equipment_refresh(NULL, NULL);
         
@@ -471,6 +489,25 @@ void on_menu_events(GtkWidget* widget, gpointer data) {
     if (gtk_builder_add_from_file(global_evenements_builder, "ui/evenements.glade", &error)) {
         GtkDialog* dialog = GTK_DIALOG(gtk_builder_get_object(global_evenements_builder, "evenements_dialog"));
         gtk_builder_connect_signals(global_evenements_builder, NULL);
+        
+        // Masquer/afficher boutons selon rôle
+        GtkWidget* btn_add = GTK_WIDGET(gtk_builder_get_object(global_evenements_builder, "events_btn_add"));
+        GtkWidget* btn_edit = GTK_WIDGET(gtk_builder_get_object(global_evenements_builder, "events_btn_edit"));
+        GtkWidget* btn_delete = GTK_WIDGET(gtk_builder_get_object(global_evenements_builder, "events_btn_delete"));
+        GtkWidget* btn_enroll = GTK_WIDGET(gtk_builder_get_object(global_evenements_builder, "events_btn_enroll"));
+        
+        if (current_role == ROLE_ADMIN) {
+            if (btn_add) gtk_widget_set_visible(btn_add, TRUE);
+            if (btn_edit) gtk_widget_set_visible(btn_edit, TRUE);
+            if (btn_delete) gtk_widget_set_visible(btn_delete, TRUE);
+            if (btn_enroll) gtk_widget_set_visible(btn_enroll, FALSE);
+        } else {
+            // Member/Trainer: masquer CRUD, afficher S'inscrire
+            if (btn_add) gtk_widget_set_visible(btn_add, FALSE);
+            if (btn_edit) gtk_widget_set_visible(btn_edit, FALSE);
+            if (btn_delete) gtk_widget_set_visible(btn_delete, FALSE);
+            if (btn_enroll) gtk_widget_set_visible(btn_enroll, TRUE);
+        }
         
         // Charger les données immédiatement
         on_events_refresh(NULL, NULL);
@@ -903,8 +940,69 @@ void on_cours_add(GtkWidget* widget, gpointer data) {
         show_permission_error("l'ajout de cours");
         return;
     }
-    print_info("Ajouter cours - Formulaire à implémenter");
-    ajouter_cours();
+    
+    GtkWidget* dialog = gtk_dialog_new_with_buttons(
+        "Ajouter un cours",
+        NULL, GTK_DIALOG_MODAL,
+        "Annuler", GTK_RESPONSE_CANCEL,
+        "Ajouter", GTK_RESPONSE_ACCEPT,
+        NULL);
+    
+    GtkWidget* content = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
+    GtkWidget* grid = gtk_grid_new();
+    gtk_grid_set_row_spacing(GTK_GRID(grid), 10);
+    gtk_grid_set_column_spacing(GTK_GRID(grid), 10);
+    gtk_container_set_border_width(GTK_CONTAINER(grid), 10);
+    gtk_container_add(GTK_CONTAINER(content), grid);
+    
+    GtkWidget* entry_nom = gtk_entry_new();
+    GtkWidget* entry_type = gtk_entry_new();
+    GtkWidget* entry_horaire = gtk_entry_new();
+    GtkWidget* entry_capa = gtk_entry_new();
+    GtkWidget* entry_centre = gtk_entry_new();
+    gtk_entry_set_text(GTK_ENTRY(entry_horaire), "Lun-Mer 10h-11h");
+    gtk_entry_set_text(GTK_ENTRY(entry_capa), "20");
+    gtk_entry_set_text(GTK_ENTRY(entry_centre), "1");
+    
+    gtk_grid_attach(GTK_GRID(grid), gtk_label_new("Nom:"), 0, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), entry_nom, 1, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), gtk_label_new("Type:"), 0, 1, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), entry_type, 1, 1, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), gtk_label_new("Horaire:"), 0, 2, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), entry_horaire, 1, 2, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), gtk_label_new("Capacité max:"), 0, 3, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), entry_capa, 1, 3, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), gtk_label_new("Centre ID:"), 0, 4, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), entry_centre, 1, 4, 1, 1);
+    
+    gtk_widget_show_all(dialog);
+    
+    if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
+        const char* nom = gtk_entry_get_text(GTK_ENTRY(entry_nom));
+        const char* type = gtk_entry_get_text(GTK_ENTRY(entry_type));
+        const char* horaire = gtk_entry_get_text(GTK_ENTRY(entry_horaire));
+        int capa = atoi(gtk_entry_get_text(GTK_ENTRY(entry_capa)));
+        int centre = atoi(gtk_entry_get_text(GTK_ENTRY(entry_centre)));
+        
+        if (strlen(nom) > 0) {
+            Cours* arr = NULL;
+            int count = charger_cours(&arr);
+            int new_id = 1;
+            for (int i = 0; i < count; i++) {
+                if (arr[i].id >= new_id) new_id = arr[i].id + 1;
+            }
+            
+            FILE* f = fopen("data/cours.txt", "a");
+            if (f) {
+                fprintf(f, "%d,%s,%s,%s,0,%d,0,%d\n", new_id, nom, type, horaire, capa, centre);
+                fclose(f);
+                print_info("Cours ajouté");
+                on_cours_refresh(NULL, NULL);
+            }
+            if (arr) free(arr);
+        }
+    }
+    gtk_widget_destroy(dialog);
 }
 
 // Fonction Member: S'inscrire à un cours
@@ -1158,8 +1256,73 @@ void on_cours_refresh(GtkWidget* widget, gpointer data) {
 
 // Trainers
 void on_trainers_add(GtkWidget* widget, gpointer data) {
-    print_info("Ajouter entraîneur");
-    ajouter_entraineur();
+    (void)widget; (void)data;
+    
+    if (current_role != ROLE_ADMIN) {
+        show_permission_error("l'ajout d'entraîneurs");
+        return;
+    }
+    
+    GtkWidget* dialog = gtk_dialog_new_with_buttons(
+        "Ajouter un entraîneur",
+        NULL, GTK_DIALOG_MODAL,
+        "Annuler", GTK_RESPONSE_CANCEL,
+        "Ajouter", GTK_RESPONSE_ACCEPT,
+        NULL);
+    
+    GtkWidget* content = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
+    GtkWidget* grid = gtk_grid_new();
+    gtk_grid_set_row_spacing(GTK_GRID(grid), 10);
+    gtk_grid_set_column_spacing(GTK_GRID(grid), 10);
+    gtk_container_set_border_width(GTK_CONTAINER(grid), 10);
+    gtk_container_add(GTK_CONTAINER(content), grid);
+    
+    GtkWidget* entry_nom = gtk_entry_new();
+    GtkWidget* entry_prenom = gtk_entry_new();
+    GtkWidget* entry_specialite = gtk_entry_new();
+    GtkWidget* entry_tel = gtk_entry_new();
+    GtkWidget* entry_centre = gtk_entry_new();
+    gtk_entry_set_text(GTK_ENTRY(entry_centre), "1");
+    
+    gtk_grid_attach(GTK_GRID(grid), gtk_label_new("Nom:"), 0, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), entry_nom, 1, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), gtk_label_new("Prénom:"), 0, 1, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), entry_prenom, 1, 1, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), gtk_label_new("Spécialité:"), 0, 2, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), entry_specialite, 1, 2, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), gtk_label_new("Téléphone:"), 0, 3, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), entry_tel, 1, 3, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), gtk_label_new("Centre ID:"), 0, 4, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), entry_centre, 1, 4, 1, 1);
+    
+    gtk_widget_show_all(dialog);
+    
+    if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
+        const char* nom = gtk_entry_get_text(GTK_ENTRY(entry_nom));
+        const char* prenom = gtk_entry_get_text(GTK_ENTRY(entry_prenom));
+        const char* spec = gtk_entry_get_text(GTK_ENTRY(entry_specialite));
+        const char* tel = gtk_entry_get_text(GTK_ENTRY(entry_tel));
+        int centre = atoi(gtk_entry_get_text(GTK_ENTRY(entry_centre)));
+        
+        if (strlen(nom) > 0 && strlen(prenom) > 0) {
+            Entraineur* arr = NULL;
+            int count = charger_entraineurs(&arr);
+            int new_id = 1;
+            for (int i = 0; i < count; i++) {
+                if (arr[i].id >= new_id) new_id = arr[i].id + 1;
+            }
+            
+            FILE* f = fopen("data/entraineurs.txt", "a");
+            if (f) {
+                fprintf(f, "%d,%s,%s,%s,%s,1,%d\n", new_id, nom, prenom, spec, tel, centre);
+                fclose(f);
+                print_info("Entraîneur ajouté");
+                on_trainers_refresh(NULL, NULL);
+            }
+            if (arr) free(arr);
+        }
+    }
+    gtk_widget_destroy(dialog);
 }
 
 void on_trainers_edit(GtkWidget* widget, gpointer data) {
@@ -1260,12 +1423,159 @@ void on_trainers_refresh(GtkWidget* widget, gpointer data) {
 
 // Equipment
 void on_equipment_add(GtkWidget* widget, gpointer data) {
-    print_info("Ajouter équipement");
-    ajouter_equipement();
+    (void)widget; (void)data;
+    
+    if (current_role != ROLE_ADMIN) {
+        show_permission_error("l'ajout d'équipements");
+        return;
+    }
+    
+    GtkWidget* dialog = gtk_dialog_new_with_buttons(
+        "Ajouter un équipement",
+        NULL, GTK_DIALOG_MODAL,
+        "Annuler", GTK_RESPONSE_CANCEL,
+        "Ajouter", GTK_RESPONSE_ACCEPT,
+        NULL);
+    
+    GtkWidget* content = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
+    GtkWidget* grid = gtk_grid_new();
+    gtk_grid_set_row_spacing(GTK_GRID(grid), 10);
+    gtk_grid_set_column_spacing(GTK_GRID(grid), 10);
+    gtk_container_set_border_width(GTK_CONTAINER(grid), 10);
+    gtk_container_add(GTK_CONTAINER(content), grid);
+    
+    GtkWidget* entry_nom = gtk_entry_new();
+    GtkWidget* entry_type = gtk_entry_new();
+    GtkWidget* entry_qte = gtk_entry_new();
+    GtkWidget* entry_centre = gtk_entry_new();
+    gtk_entry_set_text(GTK_ENTRY(entry_qte), "1");
+    gtk_entry_set_text(GTK_ENTRY(entry_centre), "1");
+    
+    gtk_grid_attach(GTK_GRID(grid), gtk_label_new("Nom:"), 0, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), entry_nom, 1, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), gtk_label_new("Type:"), 0, 1, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), entry_type, 1, 1, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), gtk_label_new("Quantité:"), 0, 2, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), entry_qte, 1, 2, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), gtk_label_new("Centre ID:"), 0, 3, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), entry_centre, 1, 3, 1, 1);
+    
+    gtk_widget_show_all(dialog);
+    
+    if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
+        const char* nom = gtk_entry_get_text(GTK_ENTRY(entry_nom));
+        const char* type = gtk_entry_get_text(GTK_ENTRY(entry_type));
+        int qte = atoi(gtk_entry_get_text(GTK_ENTRY(entry_qte)));
+        int centre = atoi(gtk_entry_get_text(GTK_ENTRY(entry_centre)));
+        
+        if (strlen(nom) > 0) {
+            Equipement* arr = NULL;
+            int count = charger_equipements(&arr);
+            int new_id = 1;
+            for (int i = 0; i < count; i++) {
+                if (arr[i].id >= new_id) new_id = arr[i].id + 1;
+            }
+            
+            FILE* f = fopen("data/equipements.txt", "a");
+            if (f) {
+                fprintf(f, "%d,%s,%s,%d,1,%d\n", new_id, nom, type, qte, centre);
+                fclose(f);
+                print_info("Équipement ajouté");
+                on_equipment_refresh(NULL, NULL);
+            }
+            if (arr) free(arr);
+        }
+    }
+    gtk_widget_destroy(dialog);
 }
 
 void on_equipment_edit(GtkWidget* widget, gpointer data) {
-    print_info("Modifier équipement");
+    (void)widget; (void)data;
+    if (current_role != ROLE_ADMIN) {
+        show_permission_error("la modification d'équipements");
+        return;
+    }
+    print_info("Modifier équipement - Formulaire Edit à implémenter");
+}
+
+// Fonction Trainer: Réserver équipement
+void on_equipment_reserve(GtkWidget* widget, gpointer data) {
+    (void)widget; (void)data;
+    
+    if (!can_access_trainer_features()) {
+        show_permission_error("la réservation d'équipements");
+        return;
+    }
+    
+    if (!global_equipements_builder) {
+        print_error("Builder equipements non disponible");
+        return;
+    }
+    
+    GtkTreeView* tree = GTK_TREE_VIEW(gtk_builder_get_object(global_equipements_builder, "equipements_treeview"));
+    if (!tree) return;
+    
+    GtkTreeSelection* selection = gtk_tree_view_get_selection(tree);
+    GtkTreeModel* model;
+    GtkTreeIter iter;
+    
+    if (gtk_tree_selection_get_selected(selection, &model, &iter)) {
+        gint id, quantite, disponible;
+        gchar* nom;
+        gtk_tree_model_get(model, &iter, 0, &id, 1, &nom, 3, &quantite, 4, &disponible, -1);
+        
+        if (!disponible || quantite == 0) {
+            GtkWidget* error = gtk_message_dialog_new(NULL, GTK_DIALOG_MODAL,
+                GTK_MESSAGE_WARNING, GTK_BUTTONS_OK,
+                "Cet équipement n'est pas disponible");
+            gtk_dialog_run(GTK_DIALOG(error));
+            gtk_widget_destroy(error);
+            g_free(nom);
+            return;
+        }
+        
+        gchar* msg = g_strdup_printf("Réserver %s ?\n\nQuantité disponible: %d", nom, quantite);
+        GtkWidget* dialog = gtk_message_dialog_new(NULL, GTK_DIALOG_MODAL,
+            GTK_MESSAGE_QUESTION, GTK_BUTTONS_YES_NO, "%s", msg);
+        g_free(msg);
+        
+        int response = gtk_dialog_run(GTK_DIALOG(dialog));
+        gtk_widget_destroy(dialog);
+        
+        if (response == GTK_RESPONSE_YES) {
+            Equipement* arr = NULL;
+            int count = charger_equipements(&arr);
+            
+            for (int i = 0; i < count; i++) {
+                if (arr[i].id == id) {
+                    arr[i].disponible = 0; // Marquer comme réservé
+                    break;
+                }
+            }
+            
+            FILE* f = fopen("data/equipements.txt", "w");
+            if (f) {
+                for (int i = 0; i < count; i++) {
+                    fprintf(f, "%d,%s,%s,%d,%d,%d\n",
+                            arr[i].id, arr[i].nom, arr[i].type,
+                            arr[i].quantite, arr[i].disponible,
+                            arr[i].centreId);
+                }
+                fclose(f);
+                print_info("Équipement réservé!");
+                on_equipment_refresh(NULL, NULL);
+            }
+            
+            if (arr) free(arr);
+        }
+        
+        g_free(nom);
+    } else {
+        GtkWidget* error = gtk_message_dialog_new(NULL, GTK_DIALOG_MODAL,
+            GTK_MESSAGE_WARNING, GTK_BUTTONS_OK, "Veuillez sélectionner un équipement");
+        gtk_dialog_run(GTK_DIALOG(error));
+        gtk_widget_destroy(error);
+    }
 }
 
 void on_equipment_delete(GtkWidget* widget, gpointer data) {
@@ -1359,12 +1669,159 @@ void on_equipment_refresh(GtkWidget* widget, gpointer data) {
 
 // Events
 void on_events_add(GtkWidget* widget, gpointer data) {
-    print_info("Ajouter événement");
-    ajouter_evenement();
+    (void)widget; (void)data;
+    
+    if (current_role != ROLE_ADMIN) {
+        show_permission_error("l'ajout d'événements");
+        return;
+    }
+    
+    GtkWidget* dialog = gtk_dialog_new_with_buttons(
+        "Ajouter un événement",
+        NULL, GTK_DIALOG_MODAL,
+        "Annuler", GTK_RESPONSE_CANCEL,
+        "Ajouter", GTK_RESPONSE_ACCEPT,
+        NULL);
+    
+    GtkWidget* content = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
+    GtkWidget* grid = gtk_grid_new();
+    gtk_grid_set_row_spacing(GTK_GRID(grid), 10);
+    gtk_grid_set_column_spacing(GTK_GRID(grid), 10);
+    gtk_container_set_border_width(GTK_CONTAINER(grid), 10);
+    gtk_container_add(GTK_CONTAINER(content), grid);
+    
+    GtkWidget* entry_nom = gtk_entry_new();
+    GtkWidget* entry_desc = gtk_entry_new();
+    GtkWidget* entry_date = gtk_entry_new();
+    GtkWidget* entry_centre = gtk_entry_new();
+    GtkWidget* entry_capa = gtk_entry_new();
+    gtk_entry_set_text(GTK_ENTRY(entry_date), "2024-12-01");
+    gtk_entry_set_text(GTK_ENTRY(entry_centre), "1");
+    gtk_entry_set_text(GTK_ENTRY(entry_capa), "50");
+    
+    gtk_grid_attach(GTK_GRID(grid), gtk_label_new("Nom:"), 0, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), entry_nom, 1, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), gtk_label_new("Description:"), 0, 1, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), entry_desc, 1, 1, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), gtk_label_new("Date (YYYY-MM-DD):"), 0, 2, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), entry_date, 1, 2, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), gtk_label_new("Centre ID:"), 0, 3, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), entry_centre, 1, 3, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), gtk_label_new("Capacité max:"), 0, 4, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), entry_capa, 1, 4, 1, 1);
+    
+    gtk_widget_show_all(dialog);
+    
+    if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
+        const char* nom = gtk_entry_get_text(GTK_ENTRY(entry_nom));
+        const char* desc = gtk_entry_get_text(GTK_ENTRY(entry_desc));
+        const char* date = gtk_entry_get_text(GTK_ENTRY(entry_date));
+        int centre = atoi(gtk_entry_get_text(GTK_ENTRY(entry_centre)));
+        int capa = atoi(gtk_entry_get_text(GTK_ENTRY(entry_capa)));
+        
+        if (strlen(nom) > 0) {
+            Evenement* arr = NULL;
+            int count = charger_evenements(&arr);
+            int new_id = 1;
+            for (int i = 0; i < count; i++) {
+                if (arr[i].id >= new_id) new_id = arr[i].id + 1;
+            }
+            
+            FILE* f = fopen("data/evenements.txt", "a");
+            if (f) {
+                fprintf(f, "%d,%s,%s,%s,%d,%d,0\n", new_id, nom, desc, date, centre, capa);
+                fclose(f);
+                print_info("Événement ajouté");
+                on_events_refresh(NULL, NULL);
+            }
+            if (arr) free(arr);
+        }
+    }
+    gtk_widget_destroy(dialog);
 }
 
 void on_events_edit(GtkWidget* widget, gpointer data) {
-    print_info("Modifier événement");
+    (void)widget; (void)data;
+    if (current_role != ROLE_ADMIN) {
+        show_permission_error("la modification d'événements");
+        return;
+    }
+    print_info("Modifier événement - Formulaire Edit à implémenter");
+}
+
+// Fonction Member/Trainer: S'inscrire à un événement
+void on_events_enroll(GtkWidget* widget, gpointer data) {
+    (void)widget; (void)data;
+    
+    if (!global_evenements_builder) {
+        print_error("Builder evenements non disponible");
+        return;
+    }
+    
+    GtkTreeView* tree = GTK_TREE_VIEW(gtk_builder_get_object(global_evenements_builder, "evenements_treeview"));
+    if (!tree) return;
+    
+    GtkTreeSelection* selection = gtk_tree_view_get_selection(tree);
+    GtkTreeModel* model;
+    GtkTreeIter iter;
+    
+    if (gtk_tree_selection_get_selected(selection, &model, &iter)) {
+        gint id, capacite_max, inscrits;
+        gchar* nom;
+        gtk_tree_model_get(model, &iter, 0, &id, 1, &nom, 5, &capacite_max, 6, &inscrits, -1);
+        
+        if (inscrits >= capacite_max) {
+            GtkWidget* error = gtk_message_dialog_new(NULL, GTK_DIALOG_MODAL,
+                GTK_MESSAGE_WARNING, GTK_BUTTONS_OK,
+                "Cet événement est complet (%d/%d inscrits)", inscrits, capacite_max);
+            gtk_dialog_run(GTK_DIALOG(error));
+            gtk_widget_destroy(error);
+            g_free(nom);
+            return;
+        }
+        
+        gchar* msg = g_strdup_printf("S'inscrire à l'événement %s ?\n\nPlaces: %d/%d", nom, inscrits + 1, capacite_max);
+        GtkWidget* dialog = gtk_message_dialog_new(NULL, GTK_DIALOG_MODAL,
+            GTK_MESSAGE_QUESTION, GTK_BUTTONS_YES_NO, "%s", msg);
+        g_free(msg);
+        
+        int response = gtk_dialog_run(GTK_DIALOG(dialog));
+        gtk_widget_destroy(dialog);
+        
+        if (response == GTK_RESPONSE_YES) {
+            Evenement* arr = NULL;
+            int count = charger_evenements(&arr);
+            
+            for (int i = 0; i < count; i++) {
+                if (arr[i].id == id) {
+                    arr[i].inscrits++;
+                    break;
+                }
+            }
+            
+            FILE* f = fopen("data/evenements.txt", "w");
+            if (f) {
+                for (int i = 0; i < count; i++) {
+                    fprintf(f, "%d,%s,%s,%s,%d,%d,%d\n",
+                            arr[i].id, arr[i].nom, arr[i].description,
+                            arr[i].date, arr[i].centreId,
+                            arr[i].capaciteMax, arr[i].inscrits);
+                }
+                fclose(f);
+                print_info("Inscription réussie!");
+                on_events_refresh(NULL, NULL);
+            }
+            
+            if (arr) free(arr);
+        }
+        
+        g_free(nom);
+    } else {
+        GtkWidget* error = gtk_message_dialog_new(NULL, GTK_DIALOG_MODAL,
+            GTK_MESSAGE_WARNING, GTK_BUTTONS_OK, "Veuillez sélectionner un événement");
+        gtk_dialog_run(GTK_DIALOG(error));
+        gtk_widget_destroy(error);
+    }
 }
 
 void on_events_delete(GtkWidget* widget, gpointer data) {

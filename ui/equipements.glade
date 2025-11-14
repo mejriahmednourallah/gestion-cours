@@ -34,16 +34,19 @@
               <packing><property name="expand">True</property></packing>
             </child>
             <child>
-              <object class="GtkButton"><property name="label">➕ Ajouter</property><property name="visible">True</property><signal name="clicked" handler="on_equipment_add"/></object>
+              <object class="GtkButton" id="equipment_btn_add"><property name="label">➕ Ajouter</property><property name="visible">True</property><signal name="clicked" handler="on_equipment_add"/></object>
             </child>
             <child>
-              <object class="GtkButton"><property name="label">✏️ Modifier</property><property name="visible">True</property><signal name="clicked" handler="on_equipment_edit"/></object>
+              <object class="GtkButton" id="equipment_btn_edit"><property name="label">✏️ Modifier</property><property name="visible">True</property><signal name="clicked" handler="on_equipment_edit"/></object>
             </child>
             <child>
-              <object class="GtkButton"><property name="label">🗑️ Supprimer</property><property name="visible">True</property><signal name="clicked" handler="on_equipment_delete"/></object>
+              <object class="GtkButton" id="equipment_btn_delete"><property name="label">🗑️ Supprimer</property><property name="visible">True</property><signal name="clicked" handler="on_equipment_delete"/></object>
             </child>
             <child>
-              <object class="GtkButton"><property name="label">🔄</property><property name="visible">True</property><signal name="clicked" handler="on_equipment_refresh"/></object>
+              <object class="GtkButton" id="equipment_btn_reserve"><property name="label">📦 Réserver</property><property name="visible">False</property><signal name="clicked" handler="on_equipment_reserve"/></object>
+            </child>
+            <child>
+              <object class="GtkButton" id="equipment_btn_refresh"><property name="label">🔄</property><property name="visible">True</property><signal name="clicked" handler="on_equipment_refresh"/></object>
             </child>
           </object>
         </child>

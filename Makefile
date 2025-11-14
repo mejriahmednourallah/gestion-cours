@@ -12,11 +12,15 @@ $(TARGET): $(OBJ)
 	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
 	@echo "✓ Compilation réussie: $@"
 
+crud-test: src/crud_test.c src/membres.c src/centres.c src/utils.c
+	$(CC) -Wall -Wextra -std=c99 -o crud_test src/crud_test.c src/membres.c src/centres.c src/utils.c
+	@echo "✓ Binaire de test CRUD: crud_test"
+
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -f $(OBJ) $(TARGET) app app-test *.o src/*.o
+	rm -f $(OBJ) $(TARGET) app app-test crud_test *.o src/*.o
 
 run: clean $(TARGET)
 	./$(TARGET)

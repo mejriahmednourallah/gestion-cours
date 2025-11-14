@@ -752,9 +752,17 @@ void on_membres_refresh(GtkWidget* widget, gpointer data) {
     // Charger les membres
     Membre* membres = NULL;
     int count = charger_membres(&membres);
+    printf("[DEBUG] Chargé %d membres\n", count);
     
     // Récupérer le ListStore
-    GtkListStore* store = GTK_LIST_STORE(gtk_builder_get_object(global_membres_builder, "membres_liststore"));
+    GObject* obj = gtk_builder_get_object(global_membres_builder, "membres_liststore");
+    if (!obj) {
+        print_error("ListStore 'membres_liststore' introuvable");
+        free(membres);
+        return;
+    }
+    
+    GtkListStore* store = GTK_LIST_STORE(obj);
     gtk_list_store_clear(store);
     
     if (count == 0 || membres == NULL) {
@@ -778,7 +786,9 @@ void on_membres_refresh(GtkWidget* widget, gpointer data) {
     }
     
     free(membres);
-    print_info("Membres chargés");
+    char msg[100];
+    snprintf(msg, sizeof(msg), "Membres chargés: %d", count);
+    print_info(msg);
 }
 
 // Centres

@@ -744,7 +744,10 @@ void on_membres_search(GtkWidget* widget, gpointer data) {
 void on_membres_refresh(GtkWidget* widget, gpointer data) {
     (void)widget; (void)data;
     
-    if (!global_membres_builder) {
+    // Utiliser le builder du dialogue s'il existe, sinon le builder principal
+    GtkBuilder* active_builder = global_membres_builder ? global_membres_builder : builder;
+    
+    if (!active_builder) {
         print_error("Builder non disponible");
         return;
     }
@@ -755,7 +758,7 @@ void on_membres_refresh(GtkWidget* widget, gpointer data) {
     printf("[DEBUG] Chargé %d membres\n", count);
     
     // Récupérer le ListStore
-    GObject* obj = gtk_builder_get_object(global_membres_builder, "membres_liststore");
+    GObject* obj = gtk_builder_get_object(active_builder, "membres_liststore");
     if (!obj) {
         print_error("ListStore 'membres_liststore' introuvable");
         free(membres);
@@ -923,7 +926,11 @@ void on_centres_delete(GtkWidget* widget, gpointer data) {
 
 void on_centres_refresh(GtkWidget* widget, gpointer data) {
     (void)widget; (void)data;
-    if (!global_centres_builder) {
+    
+    // Utiliser le builder du dialogue s'il existe, sinon le builder principal
+    GtkBuilder* active_builder = global_centres_builder ? global_centres_builder : builder;
+    
+    if (!active_builder) {
         print_error("Builder non disponible");
         return;
     }
@@ -932,7 +939,7 @@ void on_centres_refresh(GtkWidget* widget, gpointer data) {
     int count = charger_centres(&centres);
     printf("[DEBUG] Chargé %d centres\n", count);
     
-    GObject* obj = gtk_builder_get_object(global_centres_builder, "centres_liststore");
+    GObject* obj = gtk_builder_get_object(active_builder, "centres_liststore");
     if (!obj) {
         print_error("ListStore 'centres_liststore' introuvable");
         free(centres);
@@ -1254,12 +1261,14 @@ void on_cours_delete(GtkWidget* widget, gpointer data) {
 
 void on_cours_refresh(GtkWidget* widget, gpointer data) {
     (void)widget; (void)data;
-    if (!global_cours_builder) return;
+    
+    GtkBuilder* active_builder = global_cours_builder ? global_cours_builder : builder;
+    if (!active_builder) return;
     
     Cours* cours = NULL;
     int count = charger_cours(&cours);
     
-    GtkListStore* store = GTK_LIST_STORE(gtk_builder_get_object(global_cours_builder, "cours_liststore"));
+    GtkListStore* store = GTK_LIST_STORE(gtk_builder_get_object(active_builder, "cours_liststore"));
     gtk_list_store_clear(store);
     
     for (int i = 0; i < count; i++) {
@@ -1408,12 +1417,13 @@ void on_trainers_delete(GtkWidget* widget, gpointer data) {
 void on_trainers_refresh(GtkWidget* widget, gpointer data) {
     (void)widget; (void)data;
     
-    if (!global_entraineurs_builder) {
+    GtkBuilder* active_builder = global_entraineurs_builder ? global_entraineurs_builder : builder;
+    if (!active_builder) {
         print_error("Builder entraineurs non disponible");
         return;
     }
     
-    GtkTreeView* tree = GTK_TREE_VIEW(gtk_builder_get_object(global_entraineurs_builder, "entraineurs_treeview"));
+    GtkTreeView* tree = GTK_TREE_VIEW(gtk_builder_get_object(active_builder, "entraineurs_treeview"));
     if (!tree) {
         print_error("TreeView entraineurs_treeview introuvable");
         return;
@@ -1655,12 +1665,13 @@ void on_equipment_delete(GtkWidget* widget, gpointer data) {
 void on_equipment_refresh(GtkWidget* widget, gpointer data) {
     (void)widget; (void)data;
     
-    if (!global_equipements_builder) {
+    GtkBuilder* active_builder = global_equipements_builder ? global_equipements_builder : builder;
+    if (!active_builder) {
         print_error("Builder equipements non disponible");
         return;
     }
     
-    GtkTreeView* tree = GTK_TREE_VIEW(gtk_builder_get_object(global_equipements_builder, "equipements_treeview"));
+    GtkTreeView* tree = GTK_TREE_VIEW(gtk_builder_get_object(active_builder, "equipements_treeview"));
     if (!tree) {
         print_error("TreeView equipements_treeview introuvable");
         return;
@@ -1901,12 +1912,13 @@ void on_events_delete(GtkWidget* widget, gpointer data) {
 void on_events_refresh(GtkWidget* widget, gpointer data) {
     (void)widget; (void)data;
     
-    if (!global_evenements_builder) {
+    GtkBuilder* active_builder = global_evenements_builder ? global_evenements_builder : builder;
+    if (!active_builder) {
         print_error("Builder evenements non disponible");
         return;
     }
     
-    GtkTreeView* tree = GTK_TREE_VIEW(gtk_builder_get_object(global_evenements_builder, "evenements_treeview"));
+    GtkTreeView* tree = GTK_TREE_VIEW(gtk_builder_get_object(active_builder, "evenements_treeview"));
     if (!tree) {
         print_error("TreeView evenements_treeview introuvable");
         return;

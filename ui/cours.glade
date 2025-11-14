@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk+" version="3.20"/>
+  <object class="GtkDialog" id="cours_dialog">
+    <property name="title">Gestion des Cours Sportifs</property>
+    <property name="default-width">900</property>
+    <property name="default-height">600</property>
+    <child internal-child="vbox">
+      <object class="GtkBox">
+        <property name="visible">True</property>
+        <property name="orientation">vertical</property>
+        <property name="spacing">10</property>
+        <property name="margin">10</property>
+        <child>
+          <object class="GtkLabel">
+            <property name="visible">True</property>
+            <property name="label">📚 Gestion des Cours Sportifs</property>
+            <property name="xalign">0</property>
+            <attributes>
+              <attribute name="weight" value="bold"/>
+              <attribute name="size" value="16000"/>
+            </attributes>
+          </object>
+        </child>
+        <child>
+          <object class="GtkBox">
+            <property name="visible">True</property>
+            <property name="spacing">5</property>
+            <child>
+              <object class="GtkSearchEntry" id="cours_search">
+                <property name="visible">True</property>
+                <property name="placeholder-text">Rechercher un cours...</property>
+              </object>
+              <packing><property name="expand">True</property></packing>
+            </child>
+            <child>
+              <object class="GtkButton"><property name="label">➕ Ajouter</property><property name="visible">True</property><signal name="clicked" handler="on_cours_add"/></object>
+            </child>
+            <child>
+              <object class="GtkButton"><property name="label">✏️ Modifier</property><property name="visible">True</property><signal name="clicked" handler="on_cours_edit"/></object>
+            </child>
+            <child>
+              <object class="GtkButton"><property name="label">🗑️ Supprimer</property><property name="visible">True</property><signal name="clicked" handler="on_cours_delete"/></object>
+            </child>
+            <child>
+              <object class="GtkButton"><property name="label">🔄</property><property name="visible">True</property><signal name="clicked" handler="on_cours_refresh"/></object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkScrolledWindow">
+            <property name="visible">True</property>
+            <property name="shadow-type">in</property>
+            <property name="vexpand">True</property>
+            <child>
+              <object class="GtkTreeView" id="cours_treeview">
+                <property name="visible">True</property>
+                <property name="model">cours_liststore</property>
+                <child><object class="GtkTreeViewColumn"><property name="title">ID</property><child><object class="GtkCellRendererText"/><attributes><attribute name="text">0</attribute></attributes></child></object></child>
+                <child><object class="GtkTreeViewColumn"><property name="title">Nom du Cours</property><property name="expand">True</property><child><object class="GtkCellRendererText"/><attributes><attribute name="text">1</attribute></attributes></child></object></child>
+                <child><object class="GtkTreeViewColumn"><property name="title">Type</property><child><object class="GtkCellRendererText"/><attributes><attribute name="text">2</attribute></attributes></child></object></child>
+                <child><object class="GtkTreeViewColumn"><property name="title">Horaire</property><property name="expand">True</property><child><object class="GtkCellRendererText"/><attributes><attribute name="text">3</attribute></attributes></child></object></child>
+                <child><object class="GtkTreeViewColumn"><property name="title">Entraîneur</property><child><object class="GtkCellRendererText"/><attributes><attribute name="text">4</attribute></attributes></child></object></child>
+                <child><object class="GtkTreeViewColumn"><property name="title">Capacité</property><child><object class="GtkCellRendererText"/><attributes><attribute name="text">5</attribute></attributes></child></object></child>
+                <child><object class="GtkTreeViewColumn"><property name="title">Inscrits</property><child><object class="GtkCellRendererText"/><attributes><attribute name="text">6</attribute></attributes></child></object></child>
+                <child><object class="GtkTreeViewColumn"><property name="title">Centre</property><child><object class="GtkCellRendererText"/><attributes><attribute name="text">7</attribute></attributes></child></object></child>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="GtkListStore" id="cours_liststore">
+    <columns>
+      <column type="gint"/><column type="gchararray"/><column type="gchararray"/><column type="gchararray"/><column type="gint"/><column type="gint"/><column type="gint"/><column type="gint"/>
+    </columns>
+  </object>
+</interface>

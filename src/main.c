@@ -190,39 +190,123 @@ void on_about_menu(GtkWidget* widget, gpointer data) {
 // ============= Module Menu Handlers =============
 
 void on_menu_membres(GtkWidget* widget, gpointer data) {
-    print_info("Accès au module Membres");
-    GtkNotebook* notebook = GTK_NOTEBOOK(gtk_builder_get_object(builder, "content_notebook"));
-    gtk_notebook_set_current_page(notebook, 1); // Membres tab is at index 1
+    (void)widget; (void)data;
+    print_info("Ouverture du module Membres");
+    
+    GError* error = NULL;
+    GtkBuilder* membres_builder = gtk_builder_new();
+    
+    if (gtk_builder_add_from_file(membres_builder, "ui/membres.glade", &error)) {
+        GtkDialog* dialog = GTK_DIALOG(gtk_builder_get_object(membres_builder, "membres_dialog"));
+        gtk_builder_connect_signals(membres_builder, NULL);
+        gtk_widget_show_all(GTK_WIDGET(dialog));
+        gtk_dialog_run(dialog);
+        gtk_widget_destroy(GTK_WIDGET(dialog));
+    } else {
+        print_error(error ? error->message : "Erreur lors du chargement de membres.glade");
+        if (error) g_error_free(error);
+    }
+    g_object_unref(membres_builder);
 }
 
 void on_menu_centres(GtkWidget* widget, gpointer data) {
-    print_info("Accès au module Centres");
-    GtkNotebook* notebook = GTK_NOTEBOOK(gtk_builder_get_object(builder, "content_notebook"));
-    gtk_notebook_set_current_page(notebook, 2);
+    (void)widget; (void)data;
+    print_info("Ouverture du module Centres");
+    
+    GError* error = NULL;
+    GtkBuilder* centres_builder = gtk_builder_new();
+    
+    if (gtk_builder_add_from_file(centres_builder, "ui/centres.glade", &error)) {
+        GtkDialog* dialog = GTK_DIALOG(gtk_builder_get_object(centres_builder, "centres_dialog"));
+        gtk_builder_connect_signals(centres_builder, NULL);
+        gtk_widget_show_all(GTK_WIDGET(dialog));
+        gtk_dialog_run(dialog);
+        gtk_widget_destroy(GTK_WIDGET(dialog));
+    } else {
+        print_error(error ? error->message : "Erreur lors du chargement de centres.glade");
+        if (error) g_error_free(error);
+    }
+    g_object_unref(centres_builder);
 }
 
 void on_menu_courses(GtkWidget* widget, gpointer data) {
-    print_info("Accès au module Cours");
-    GtkNotebook* notebook = GTK_NOTEBOOK(gtk_builder_get_object(builder, "content_notebook"));
-    gtk_notebook_set_current_page(notebook, 3);
+    (void)widget; (void)data;
+    print_info("Ouverture du module Cours");
+    
+    GError* error = NULL;
+    GtkBuilder* cours_builder = gtk_builder_new();
+    
+    if (gtk_builder_add_from_file(cours_builder, "ui/cours.glade", &error)) {
+        GtkDialog* dialog = GTK_DIALOG(gtk_builder_get_object(cours_builder, "cours_dialog"));
+        gtk_builder_connect_signals(cours_builder, NULL);
+        gtk_widget_show_all(GTK_WIDGET(dialog));
+        gtk_dialog_run(dialog);
+        gtk_widget_destroy(GTK_WIDGET(dialog));
+    } else {
+        print_error(error ? error->message : "Erreur lors du chargement de cours.glade");
+        if (error) g_error_free(error);
+    }
+    g_object_unref(cours_builder);
 }
 
 void on_menu_trainers(GtkWidget* widget, gpointer data) {
-    print_info("Accès au module Entraîneurs");
-    GtkNotebook* notebook = GTK_NOTEBOOK(gtk_builder_get_object(builder, "content_notebook"));
-    gtk_notebook_set_current_page(notebook, 4);
+    (void)widget; (void)data;
+    print_info("Ouverture du module Entraîneurs");
+    
+    GError* error = NULL;
+    GtkBuilder* trainers_builder = gtk_builder_new();
+    
+    if (gtk_builder_add_from_file(trainers_builder, "ui/entraineurs.glade", &error)) {
+        GtkDialog* dialog = GTK_DIALOG(gtk_builder_get_object(trainers_builder, "entraineurs_dialog"));
+        gtk_builder_connect_signals(trainers_builder, NULL);
+        gtk_widget_show_all(GTK_WIDGET(dialog));
+        gtk_dialog_run(dialog);
+        gtk_widget_destroy(GTK_WIDGET(dialog));
+    } else {
+        print_error(error ? error->message : "Erreur lors du chargement de entraineurs.glade");
+        if (error) g_error_free(error);
+    }
+    g_object_unref(trainers_builder);
 }
 
 void on_menu_equipment(GtkWidget* widget, gpointer data) {
-    print_info("Accès au module Équipements");
-    GtkNotebook* notebook = GTK_NOTEBOOK(gtk_builder_get_object(builder, "content_notebook"));
-    gtk_notebook_set_current_page(notebook, 5);
+    (void)widget; (void)data;
+    print_info("Ouverture du module Équipements");
+    
+    GError* error = NULL;
+    GtkBuilder* equipment_builder = gtk_builder_new();
+    
+    if (gtk_builder_add_from_file(equipment_builder, "ui/equipements.glade", &error)) {
+        GtkDialog* dialog = GTK_DIALOG(gtk_builder_get_object(equipment_builder, "equipements_dialog"));
+        gtk_builder_connect_signals(equipment_builder, NULL);
+        gtk_widget_show_all(GTK_WIDGET(dialog));
+        gtk_dialog_run(dialog);
+        gtk_widget_destroy(GTK_WIDGET(dialog));
+    } else {
+        print_error(error ? error->message : "Erreur lors du chargement de equipements.glade");
+        if (error) g_error_free(error);
+    }
+    g_object_unref(equipment_builder);
 }
 
 void on_menu_events(GtkWidget* widget, gpointer data) {
-    print_info("Accès au module Événements");
-    GtkNotebook* notebook = GTK_NOTEBOOK(gtk_builder_get_object(builder, "content_notebook"));
-    gtk_notebook_set_current_page(notebook, 6);
+    (void)widget; (void)data;
+    print_info("Ouverture du module Événements");
+    
+    GError* error = NULL;
+    GtkBuilder* events_builder = gtk_builder_new();
+    
+    if (gtk_builder_add_from_file(events_builder, "ui/evenements.glade", &error)) {
+        GtkDialog* dialog = GTK_DIALOG(gtk_builder_get_object(events_builder, "evenements_dialog"));
+        gtk_builder_connect_signals(events_builder, NULL);
+        gtk_widget_show_all(GTK_WIDGET(dialog));
+        gtk_dialog_run(dialog);
+        gtk_widget_destroy(GTK_WIDGET(dialog));
+    } else {
+        print_error(error ? error->message : "Erreur lors du chargement de evenements.glade");
+        if (error) g_error_free(error);
+    }
+    g_object_unref(events_builder);
 }
 
 // ============= Module CRUD Stubs =============

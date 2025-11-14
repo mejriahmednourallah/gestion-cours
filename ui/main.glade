@@ -1440,11 +1440,12 @@
                     <property name="can-focus">True</property>
                     <property name="shadow-type">in</property>
                     <child>
-                      <object class="GtkTreeView" id="trainers_treeview">
+                      <object class="GtkTreeView" id="entraineurs_treeview">
                         <property name="visible">True</property>
                         <property name="can-focus">True</property>
+                        <property name="model">entraineurs_liststore</property>
                         <child internal-child="selection">
-                          <object class="GtkTreeSelection" id="trainers_selection"/>
+                          <object class="GtkTreeSelection" id="entraineurs_selection"/>
                         </child>
                       </object>
                     </child>
@@ -1551,11 +1552,12 @@
                     <property name="can-focus">True</property>
                     <property name="shadow-type">in</property>
                     <child>
-                      <object class="GtkTreeView" id="equipment_treeview">
+                      <object class="GtkTreeView" id="equipements_treeview">
                         <property name="visible">True</property>
                         <property name="can-focus">True</property>
+                        <property name="model">equipements_liststore</property>
                         <child internal-child="selection">
-                          <object class="GtkTreeSelection" id="equipment_selection"/>
+                          <object class="GtkTreeSelection" id="equipements_selection"/>
                         </child>
                       </object>
                     </child>
@@ -1662,11 +1664,12 @@
                     <property name="can-focus">True</property>
                     <property name="shadow-type">in</property>
                     <child>
-                      <object class="GtkTreeView" id="events_treeview">
+                      <object class="GtkTreeView" id="evenements_treeview">
                         <property name="visible">True</property>
                         <property name="can-focus">True</property>
+                        <property name="model">evenements_liststore</property>
                         <child internal-child="selection">
-                          <object class="GtkTreeSelection" id="events_selection"/>
+                          <object class="GtkTreeSelection" id="evenements_selection"/>
                         </child>
                       </object>
                     </child>

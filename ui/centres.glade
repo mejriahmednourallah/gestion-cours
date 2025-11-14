@@ -34,16 +34,16 @@
               <packing><property name="expand">True</property></packing>
             </child>
             <child>
-              <object class="GtkButton"><property name="label">➕ Ajouter</property><property name="visible">True</property><signal name="clicked" handler="on_centres_add"/></object>
+              <object class="GtkButton" id="centres_btn_add"><property name="label">➕ Ajouter</property><property name="visible">True</property><signal name="clicked" handler="on_centres_add"/></object>
             </child>
             <child>
-              <object class="GtkButton"><property name="label">✏️ Modifier</property><property name="visible">True</property><signal name="clicked" handler="on_centres_edit"/></object>
+              <object class="GtkButton" id="centres_btn_edit"><property name="label">✏️ Modifier</property><property name="visible">True</property><signal name="clicked" handler="on_centres_edit"/></object>
             </child>
             <child>
-              <object class="GtkButton"><property name="label">🗑️ Supprimer</property><property name="visible">True</property><signal name="clicked" handler="on_centres_delete"/></object>
+              <object class="GtkButton" id="centres_btn_delete"><property name="label">🗑️ Supprimer</property><property name="visible">True</property><signal name="clicked" handler="on_centres_delete"/></object>
             </child>
             <child>
-              <object class="GtkButton"><property name="label">🔄</property><property name="visible">True</property><signal name="clicked" handler="on_centres_refresh"/></object>
+              <object class="GtkButton" id="centres_btn_refresh"><property name="label">🔄</property><property name="visible">True</property><signal name="clicked" handler="on_centres_refresh"/></object>
             </child>
           </object>
         </child>

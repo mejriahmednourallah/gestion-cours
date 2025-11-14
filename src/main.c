@@ -231,7 +231,7 @@ void on_about_menu(GtkWidget* widget, gpointer data) {
 void on_menu_membres(GtkWidget* widget, gpointer data) {
     (void)widget; (void)data;
     
-    // Membres: Admin (full access), Member (view/edit self only)
+    // Membres: Admin (full access), Member (view only)
     if (!can_access_admin_features() && !can_access_member_features()) {
         show_permission_error("le module Membres");
         return;
@@ -245,6 +245,23 @@ void on_menu_membres(GtkWidget* widget, gpointer data) {
     if (gtk_builder_add_from_file(global_membres_builder, "ui/membres.glade", &error)) {
         GtkDialog* dialog = GTK_DIALOG(gtk_builder_get_object(global_membres_builder, "membres_dialog"));
         gtk_builder_connect_signals(global_membres_builder, NULL);
+        
+        // Masquer/afficher boutons selon rôle
+        GtkWidget* btn_add = GTK_WIDGET(gtk_builder_get_object(global_membres_builder, "btn_membres_add"));
+        GtkWidget* btn_edit = GTK_WIDGET(gtk_builder_get_object(global_membres_builder, "btn_membres_edit"));
+        GtkWidget* btn_delete = GTK_WIDGET(gtk_builder_get_object(global_membres_builder, "btn_membres_delete"));
+        
+        if (current_role == ROLE_ADMIN) {
+            // Admin: tout visible
+            if (btn_add) gtk_widget_set_visible(btn_add, TRUE);
+            if (btn_edit) gtk_widget_set_visible(btn_edit, TRUE);
+            if (btn_delete) gtk_widget_set_visible(btn_delete, TRUE);
+        } else {
+            // Member/Trainer: masquer CRUD
+            if (btn_add) gtk_widget_set_visible(btn_add, FALSE);
+            if (btn_edit) gtk_widget_set_visible(btn_edit, FALSE);
+            if (btn_delete) gtk_widget_set_visible(btn_delete, FALSE);
+        }
         
         // Charger les données au démarrage
         on_membres_refresh(NULL, NULL);
@@ -280,6 +297,22 @@ void on_menu_centres(GtkWidget* widget, gpointer data) {
     if (gtk_builder_add_from_file(global_centres_builder, "ui/centres.glade", &error)) {
         GtkDialog* dialog = GTK_DIALOG(gtk_builder_get_object(global_centres_builder, "centres_dialog"));
         gtk_builder_connect_signals(global_centres_builder, NULL);
+        
+        // Masquer/afficher boutons selon rôle
+        GtkWidget* btn_add = GTK_WIDGET(gtk_builder_get_object(global_centres_builder, "centres_btn_add"));
+        GtkWidget* btn_edit = GTK_WIDGET(gtk_builder_get_object(global_centres_builder, "centres_btn_edit"));
+        GtkWidget* btn_delete = GTK_WIDGET(gtk_builder_get_object(global_centres_builder, "centres_btn_delete"));
+        
+        if (current_role == ROLE_ADMIN) {
+            if (btn_add) gtk_widget_set_visible(btn_add, TRUE);
+            if (btn_edit) gtk_widget_set_visible(btn_edit, TRUE);
+            if (btn_delete) gtk_widget_set_visible(btn_delete, TRUE);
+        } else {
+            if (btn_add) gtk_widget_set_visible(btn_add, FALSE);
+            if (btn_edit) gtk_widget_set_visible(btn_edit, FALSE);
+            if (btn_delete) gtk_widget_set_visible(btn_delete, FALSE);
+        }
+        
         on_centres_refresh(NULL, NULL);
         gtk_widget_show_all(GTK_WIDGET(dialog));
         gtk_dialog_run(dialog);
@@ -299,7 +332,6 @@ void on_menu_courses(GtkWidget* widget, gpointer data) {
     (void)widget; (void)data;
     
     // Cours: Accessible à tous (Admin, Member, Trainer)
-    // Pas de restriction - tous peuvent voir/s'inscrire aux cours
     
     print_info("Ouverture du module Cours");
     
@@ -309,6 +341,37 @@ void on_menu_courses(GtkWidget* widget, gpointer data) {
     if (gtk_builder_add_from_file(global_cours_builder, "ui/cours.glade", &error)) {
         GtkDialog* dialog = GTK_DIALOG(gtk_builder_get_object(global_cours_builder, "cours_dialog"));
         gtk_builder_connect_signals(global_cours_builder, NULL);
+        
+        // Masquer/afficher boutons selon rôle
+        GtkWidget* btn_add = GTK_WIDGET(gtk_builder_get_object(global_cours_builder, "cours_btn_add"));
+        GtkWidget* btn_edit = GTK_WIDGET(gtk_builder_get_object(global_cours_builder, "cours_btn_edit"));
+        GtkWidget* btn_delete = GTK_WIDGET(gtk_builder_get_object(global_cours_builder, "cours_btn_delete"));
+        GtkWidget* btn_enroll = GTK_WIDGET(gtk_builder_get_object(global_cours_builder, "cours_btn_enroll"));
+        GtkWidget* btn_join = GTK_WIDGET(gtk_builder_get_object(global_cours_builder, "cours_btn_join_trainer"));
+        
+        if (current_role == ROLE_ADMIN) {
+            // Admin: voir Add/Edit/Delete, masquer Member/Trainer buttons
+            if (btn_add) gtk_widget_set_visible(btn_add, TRUE);
+            if (btn_edit) gtk_widget_set_visible(btn_edit, TRUE);
+            if (btn_delete) gtk_widget_set_visible(btn_delete, TRUE);
+            if (btn_enroll) gtk_widget_set_visible(btn_enroll, FALSE);
+            if (btn_join) gtk_widget_set_visible(btn_join, FALSE);
+        } else if (current_role == ROLE_MEMBER) {
+            // Member: masquer CRUD, afficher S'inscrire
+            if (btn_add) gtk_widget_set_visible(btn_add, FALSE);
+            if (btn_edit) gtk_widget_set_visible(btn_edit, FALSE);
+            if (btn_delete) gtk_widget_set_visible(btn_delete, FALSE);
+            if (btn_enroll) gtk_widget_set_visible(btn_enroll, TRUE);
+            if (btn_join) gtk_widget_set_visible(btn_join, FALSE);
+        } else if (current_role == ROLE_TRAINER) {
+            // Trainer: masquer CRUD, afficher Rejoindre
+            if (btn_add) gtk_widget_set_visible(btn_add, FALSE);
+            if (btn_edit) gtk_widget_set_visible(btn_edit, FALSE);
+            if (btn_delete) gtk_widget_set_visible(btn_delete, FALSE);
+            if (btn_enroll) gtk_widget_set_visible(btn_enroll, FALSE);
+            if (btn_join) gtk_widget_set_visible(btn_join, TRUE);
+        }
+        
         on_cours_refresh(NULL, NULL);
         gtk_widget_show_all(GTK_WIDGET(dialog));
         gtk_dialog_run(dialog);
@@ -336,11 +399,15 @@ void on_menu_trainers(GtkWidget* widget, gpointer data) {
     print_info("Ouverture du module Entraîneurs");
     
     GError* error = NULL;
-    GtkBuilder* trainers_builder = gtk_builder_new();
+    global_entraineurs_builder = gtk_builder_new();
     
-    if (gtk_builder_add_from_file(trainers_builder, "ui/entraineurs.glade", &error)) {
-        GtkDialog* dialog = GTK_DIALOG(gtk_builder_get_object(trainers_builder, "entraineurs_dialog"));
-        gtk_builder_connect_signals(trainers_builder, NULL);
+    if (gtk_builder_add_from_file(global_entraineurs_builder, "ui/entraineurs.glade", &error)) {
+        GtkDialog* dialog = GTK_DIALOG(gtk_builder_get_object(global_entraineurs_builder, "entraineurs_dialog"));
+        gtk_builder_connect_signals(global_entraineurs_builder, NULL);
+        
+        // Charger les données immédiatement
+        on_trainers_refresh(NULL, NULL);
+        
         gtk_widget_show_all(GTK_WIDGET(dialog));
         gtk_dialog_run(dialog);
         gtk_widget_destroy(GTK_WIDGET(dialog));
@@ -348,7 +415,11 @@ void on_menu_trainers(GtkWidget* widget, gpointer data) {
         print_error(error ? error->message : "Erreur lors du chargement de entraineurs.glade");
         if (error) g_error_free(error);
     }
-    g_object_unref(trainers_builder);
+    
+    if (global_entraineurs_builder) {
+        g_object_unref(global_entraineurs_builder);
+        global_entraineurs_builder = NULL;
+    }
 }
 
 void on_menu_equipment(GtkWidget* widget, gpointer data) {
@@ -363,11 +434,15 @@ void on_menu_equipment(GtkWidget* widget, gpointer data) {
     print_info("Ouverture du module Équipements");
     
     GError* error = NULL;
-    GtkBuilder* equipment_builder = gtk_builder_new();
+    global_equipements_builder = gtk_builder_new();
     
-    if (gtk_builder_add_from_file(equipment_builder, "ui/equipements.glade", &error)) {
-        GtkDialog* dialog = GTK_DIALOG(gtk_builder_get_object(equipment_builder, "equipements_dialog"));
-        gtk_builder_connect_signals(equipment_builder, NULL);
+    if (gtk_builder_add_from_file(global_equipements_builder, "ui/equipements.glade", &error)) {
+        GtkDialog* dialog = GTK_DIALOG(gtk_builder_get_object(global_equipements_builder, "equipements_dialog"));
+        gtk_builder_connect_signals(global_equipements_builder, NULL);
+        
+        // Charger les données immédiatement
+        on_equipment_refresh(NULL, NULL);
+        
         gtk_widget_show_all(GTK_WIDGET(dialog));
         gtk_dialog_run(dialog);
         gtk_widget_destroy(GTK_WIDGET(dialog));
@@ -375,7 +450,11 @@ void on_menu_equipment(GtkWidget* widget, gpointer data) {
         print_error(error ? error->message : "Erreur lors du chargement de equipements.glade");
         if (error) g_error_free(error);
     }
-    g_object_unref(equipment_builder);
+    
+    if (global_equipements_builder) {
+        g_object_unref(global_equipements_builder);
+        global_equipements_builder = NULL;
+    }
 }
 
 void on_menu_events(GtkWidget* widget, gpointer data) {
@@ -387,11 +466,15 @@ void on_menu_events(GtkWidget* widget, gpointer data) {
     print_info("Ouverture du module Événements");
     
     GError* error = NULL;
-    GtkBuilder* events_builder = gtk_builder_new();
+    global_evenements_builder = gtk_builder_new();
     
-    if (gtk_builder_add_from_file(events_builder, "ui/evenements.glade", &error)) {
-        GtkDialog* dialog = GTK_DIALOG(gtk_builder_get_object(events_builder, "evenements_dialog"));
-        gtk_builder_connect_signals(events_builder, NULL);
+    if (gtk_builder_add_from_file(global_evenements_builder, "ui/evenements.glade", &error)) {
+        GtkDialog* dialog = GTK_DIALOG(gtk_builder_get_object(global_evenements_builder, "evenements_dialog"));
+        gtk_builder_connect_signals(global_evenements_builder, NULL);
+        
+        // Charger les données immédiatement
+        on_events_refresh(NULL, NULL);
+        
         gtk_widget_show_all(GTK_WIDGET(dialog));
         gtk_dialog_run(dialog);
         gtk_widget_destroy(GTK_WIDGET(dialog));
@@ -399,7 +482,11 @@ void on_menu_events(GtkWidget* widget, gpointer data) {
         print_error(error ? error->message : "Erreur lors du chargement de evenements.glade");
         if (error) g_error_free(error);
     }
-    g_object_unref(events_builder);
+    
+    if (global_evenements_builder) {
+        g_object_unref(global_evenements_builder);
+        global_evenements_builder = NULL;
+    }
 }
 
 // ============= Module CRUD Stubs =============
@@ -413,8 +500,87 @@ void on_membres_add(GtkWidget* widget, gpointer data) {
         return;
     }
     
-    print_info("Ajouter membre - Fonction à implémenter avec formulaire");
-    ajouter_membre();
+    // Créer dialog avec formulaire
+    GtkWidget* dialog = gtk_dialog_new_with_buttons(
+        "Ajouter un membre",
+        NULL,
+        GTK_DIALOG_MODAL,
+        "Annuler", GTK_RESPONSE_CANCEL,
+        "Ajouter", GTK_RESPONSE_ACCEPT,
+        NULL);
+    
+    GtkWidget* content = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
+    GtkWidget* grid = gtk_grid_new();
+    gtk_grid_set_row_spacing(GTK_GRID(grid), 10);
+    gtk_grid_set_column_spacing(GTK_GRID(grid), 10);
+    gtk_container_set_border_width(GTK_CONTAINER(grid), 10);
+    gtk_container_add(GTK_CONTAINER(content), grid);
+    
+    // Champs du formulaire
+    GtkWidget* label_nom = gtk_label_new("Nom:");
+    GtkWidget* entry_nom = gtk_entry_new();
+    gtk_grid_attach(GTK_GRID(grid), label_nom, 0, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), entry_nom, 1, 0, 1, 1);
+    
+    GtkWidget* label_prenom = gtk_label_new("Prénom:");
+    GtkWidget* entry_prenom = gtk_entry_new();
+    gtk_grid_attach(GTK_GRID(grid), label_prenom, 0, 1, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), entry_prenom, 1, 1, 1, 1);
+    
+    GtkWidget* label_email = gtk_label_new("Email:");
+    GtkWidget* entry_email = gtk_entry_new();
+    gtk_grid_attach(GTK_GRID(grid), label_email, 0, 2, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), entry_email, 1, 2, 1, 1);
+    
+    GtkWidget* label_tel = gtk_label_new("Téléphone:");
+    GtkWidget* entry_tel = gtk_entry_new();
+    gtk_grid_attach(GTK_GRID(grid), label_tel, 0, 3, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), entry_tel, 1, 3, 1, 1);
+    
+    gtk_widget_show_all(dialog);
+    
+    int response = gtk_dialog_run(GTK_DIALOG(dialog));
+    
+    if (response == GTK_RESPONSE_ACCEPT) {
+        const char* nom = gtk_entry_get_text(GTK_ENTRY(entry_nom));
+        const char* prenom = gtk_entry_get_text(GTK_ENTRY(entry_prenom));
+        const char* email = gtk_entry_get_text(GTK_ENTRY(entry_email));
+        const char* tel = gtk_entry_get_text(GTK_ENTRY(entry_tel));
+        
+        // Validation
+        if (strlen(nom) == 0 || strlen(prenom) == 0 || strlen(email) == 0) {
+            GtkWidget* error = gtk_message_dialog_new(NULL, GTK_DIALOG_MODAL,
+                GTK_MESSAGE_WARNING, GTK_BUTTONS_OK,
+                "Veuillez remplir tous les champs obligatoires");
+            gtk_dialog_run(GTK_DIALOG(error));
+            gtk_widget_destroy(error);
+        } else {
+            // Charger membres existants pour générer ID
+            Membre* membres = NULL;
+            int count = charger_membres(&membres);
+            int new_id = 1;
+            if (count > 0) {
+                // Trouver ID max
+                for (int i = 0; i < count; i++) {
+                    if (membres[i].id >= new_id) new_id = membres[i].id + 1;
+                }
+            }
+            
+            // Ajouter au fichier
+            FILE* f = fopen("data/membres.txt", "a");
+            if (f) {
+                fprintf(f, "%d,%s,%s,%s,%s,%s,1\n",
+                        new_id, nom, prenom, email, tel, get_current_date());
+                fclose(f);
+                print_info("Membre ajouté avec succès");
+                on_membres_refresh(NULL, NULL);
+            }
+            
+            if (membres) free(membres);
+        }
+    }
+    
+    gtk_widget_destroy(dialog);
 }
 
 void on_membres_edit(GtkWidget* widget, gpointer data) {
@@ -581,8 +747,83 @@ void on_centres_add(GtkWidget* widget, gpointer data) {
         show_permission_error("l'ajout de centres");
         return;
     }
-    print_info("Ajouter centre - Formulaire à implémenter");
-    ajouter_centre();
+    
+    GtkWidget* dialog = gtk_dialog_new_with_buttons(
+        "Ajouter un centre",
+        NULL,
+        GTK_DIALOG_MODAL,
+        "Annuler", GTK_RESPONSE_CANCEL,
+        "Ajouter", GTK_RESPONSE_ACCEPT,
+        NULL);
+    
+    GtkWidget* content = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
+    GtkWidget* grid = gtk_grid_new();
+    gtk_grid_set_row_spacing(GTK_GRID(grid), 10);
+    gtk_grid_set_column_spacing(GTK_GRID(grid), 10);
+    gtk_container_set_border_width(GTK_CONTAINER(grid), 10);
+    gtk_container_add(GTK_CONTAINER(content), grid);
+    
+    GtkWidget* label_nom = gtk_label_new("Nom:");
+    GtkWidget* entry_nom = gtk_entry_new();
+    gtk_grid_attach(GTK_GRID(grid), label_nom, 0, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), entry_nom, 1, 0, 1, 1);
+    
+    GtkWidget* label_adresse = gtk_label_new("Adresse:");
+    GtkWidget* entry_adresse = gtk_entry_new();
+    gtk_grid_attach(GTK_GRID(grid), label_adresse, 0, 1, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), entry_adresse, 1, 1, 1, 1);
+    
+    GtkWidget* label_tel = gtk_label_new("Téléphone:");
+    GtkWidget* entry_tel = gtk_entry_new();
+    gtk_grid_attach(GTK_GRID(grid), label_tel, 0, 2, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), entry_tel, 1, 2, 1, 1);
+    
+    GtkWidget* label_capacite = gtk_label_new("Capacité:");
+    GtkWidget* entry_capacite = gtk_entry_new();
+    gtk_entry_set_text(GTK_ENTRY(entry_capacite), "100");
+    gtk_grid_attach(GTK_GRID(grid), label_capacite, 0, 3, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid), entry_capacite, 1, 3, 1, 1);
+    
+    gtk_widget_show_all(dialog);
+    
+    int response = gtk_dialog_run(GTK_DIALOG(dialog));
+    
+    if (response == GTK_RESPONSE_ACCEPT) {
+        const char* nom = gtk_entry_get_text(GTK_ENTRY(entry_nom));
+        const char* adresse = gtk_entry_get_text(GTK_ENTRY(entry_adresse));
+        const char* tel = gtk_entry_get_text(GTK_ENTRY(entry_tel));
+        const char* capacite_str = gtk_entry_get_text(GTK_ENTRY(entry_capacite));
+        
+        if (strlen(nom) == 0 || strlen(adresse) == 0) {
+            GtkWidget* error = gtk_message_dialog_new(NULL, GTK_DIALOG_MODAL,
+                GTK_MESSAGE_WARNING, GTK_BUTTONS_OK,
+                "Veuillez remplir tous les champs obligatoires");
+            gtk_dialog_run(GTK_DIALOG(error));
+            gtk_widget_destroy(error);
+        } else {
+            int capacite = atoi(capacite_str);
+            Centre* centres = NULL;
+            int count = charger_centres(&centres);
+            int new_id = 1;
+            if (count > 0) {
+                for (int i = 0; i < count; i++) {
+                    if (centres[i].id >= new_id) new_id = centres[i].id + 1;
+                }
+            }
+            
+            FILE* f = fopen("data/centres.txt", "a");
+            if (f) {
+                fprintf(f, "%d,%s,%s,%s,%d\n", new_id, nom, adresse, tel, capacite);
+                fclose(f);
+                print_info("Centre ajouté avec succès");
+                on_centres_refresh(NULL, NULL);
+            }
+            
+            if (centres) free(centres);
+        }
+    }
+    
+    gtk_widget_destroy(dialog);
 }
 
 void on_centres_edit(GtkWidget* widget, gpointer data) {
@@ -666,6 +907,170 @@ void on_cours_add(GtkWidget* widget, gpointer data) {
     ajouter_cours();
 }
 
+// Fonction Member: S'inscrire à un cours
+void on_cours_enroll(GtkWidget* widget, gpointer data) {
+    (void)widget; (void)data;
+    
+    if (!can_access_member_features()) {
+        show_permission_error("l'inscription aux cours");
+        return;
+    }
+    
+    if (!global_cours_builder) {
+        print_error("Builder cours non disponible");
+        return;
+    }
+    
+    GtkTreeView* tree = GTK_TREE_VIEW(gtk_builder_get_object(global_cours_builder, "cours_treeview"));
+    if (!tree) return;
+    
+    GtkTreeSelection* selection = gtk_tree_view_get_selection(tree);
+    GtkTreeModel* model;
+    GtkTreeIter iter;
+    
+    if (gtk_tree_selection_get_selected(selection, &model, &iter)) {
+        gint id, capacite_max, inscrits;
+        gchar* nom;
+        gtk_tree_model_get(model, &iter, 0, &id, 1, &nom, 5, &capacite_max, 6, &inscrits, -1);
+        
+        if (inscrits >= capacite_max) {
+            GtkWidget* error = gtk_message_dialog_new(NULL, GTK_DIALOG_MODAL,
+                GTK_MESSAGE_WARNING, GTK_BUTTONS_OK,
+                "Ce cours est complet (%d/%d inscrits)", inscrits, capacite_max);
+            gtk_dialog_run(GTK_DIALOG(error));
+            gtk_widget_destroy(error);
+            g_free(nom);
+            return;
+        }
+        
+        gchar* msg = g_strdup_printf("S'inscrire au cours %s ?\n\nPlaces: %d/%d", nom, inscrits + 1, capacite_max);
+        GtkWidget* dialog = gtk_message_dialog_new(NULL, GTK_DIALOG_MODAL,
+            GTK_MESSAGE_QUESTION, GTK_BUTTONS_YES_NO, "%s", msg);
+        g_free(msg);
+        
+        int response = gtk_dialog_run(GTK_DIALOG(dialog));
+        gtk_widget_destroy(dialog);
+        
+        if (response == GTK_RESPONSE_YES) {
+            Cours* cours = NULL;
+            int count = charger_cours(&cours);
+            
+            for (int i = 0; i < count; i++) {
+                if (cours[i].id == id) {
+                    cours[i].inscrits++;
+                    break;
+                }
+            }
+            
+            FILE* f = fopen("data/cours.txt", "w");
+            if (f) {
+                for (int i = 0; i < count; i++) {
+                    fprintf(f, "%d,%s,%s,%s,%d,%d,%d,%d\n",
+                            cours[i].id, cours[i].nom, cours[i].type,
+                            cours[i].horaire, cours[i].entraineurId,
+                            cours[i].capaciteMax, cours[i].inscrits,
+                            cours[i].centreId);
+                }
+                fclose(f);
+                print_info("Inscription réussie!");
+                on_cours_refresh(NULL, NULL);
+            }
+            
+            if (cours) free(cours);
+        }
+        
+        g_free(nom);
+    } else {
+        GtkWidget* error = gtk_message_dialog_new(NULL, GTK_DIALOG_MODAL,
+            GTK_MESSAGE_WARNING, GTK_BUTTONS_OK, "Veuillez sélectionner un cours");
+        gtk_dialog_run(GTK_DIALOG(error));
+        gtk_widget_destroy(error);
+    }
+}
+
+// Fonction Trainer: Rejoindre cours comme coach
+void on_cours_join_as_trainer(GtkWidget* widget, gpointer data) {
+    (void)widget; (void)data;
+    
+    if (!can_access_trainer_features()) {
+        show_permission_error("rejoindre un cours comme entraîneur");
+        return;
+    }
+    
+    if (!global_cours_builder) {
+        print_error("Builder cours non disponible");
+        return;
+    }
+    
+    GtkTreeView* tree = GTK_TREE_VIEW(gtk_builder_get_object(global_cours_builder, "cours_treeview"));
+    if (!tree) return;
+    
+    GtkTreeSelection* selection = gtk_tree_view_get_selection(tree);
+    GtkTreeModel* model;
+    GtkTreeIter iter;
+    
+    if (gtk_tree_selection_get_selected(selection, &model, &iter)) {
+        gint id, entraineur_id;
+        gchar* nom;
+        gtk_tree_model_get(model, &iter, 0, &id, 1, &nom, 4, &entraineur_id, -1);
+        
+        if (entraineur_id != 0) {
+            GtkWidget* error = gtk_message_dialog_new(NULL, GTK_DIALOG_MODAL,
+                GTK_MESSAGE_WARNING, GTK_BUTTONS_OK,
+                "Ce cours a déjà un entraîneur (ID: %d)", entraineur_id);
+            gtk_dialog_run(GTK_DIALOG(error));
+            gtk_widget_destroy(error);
+            g_free(nom);
+            return;
+        }
+        
+        gchar* msg = g_strdup_printf("Rejoindre le cours %s comme entraîneur ?", nom);
+        GtkWidget* dialog = gtk_message_dialog_new(NULL, GTK_DIALOG_MODAL,
+            GTK_MESSAGE_QUESTION, GTK_BUTTONS_YES_NO, "%s", msg);
+        g_free(msg);
+        
+        int response = gtk_dialog_run(GTK_DIALOG(dialog));
+        gtk_widget_destroy(dialog);
+        
+        if (response == GTK_RESPONSE_YES) {
+            int trainer_id = 1;
+            
+            Cours* cours = NULL;
+            int count = charger_cours(&cours);
+            
+            for (int i = 0; i < count; i++) {
+                if (cours[i].id == id) {
+                    cours[i].entraineurId = trainer_id;
+                    break;
+                }
+            }
+            
+            FILE* f = fopen("data/cours.txt", "w");
+            if (f) {
+                for (int i = 0; i < count; i++) {
+                    fprintf(f, "%d,%s,%s,%s,%d,%d,%d,%d\n",
+                            cours[i].id, cours[i].nom, cours[i].type,
+                            cours[i].horaire, cours[i].entraineurId,
+                            cours[i].capaciteMax, cours[i].inscrits,
+                            cours[i].centreId);
+                }
+                fclose(f);
+                print_info("Vous avez rejoint le cours!");
+                on_cours_refresh(NULL, NULL);
+            }
+            
+            if (cours) free(cours);
+        }
+        
+        g_free(nom);
+    } else {
+        GtkWidget* error = gtk_message_dialog_new(NULL, GTK_DIALOG_MODAL,
+            GTK_MESSAGE_WARNING, GTK_BUTTONS_OK, "Veuillez sélectionner un cours");
+        gtk_dialog_run(GTK_DIALOG(error));
+        gtk_widget_destroy(error);
+    }
+}
+
 void on_cours_edit(GtkWidget* widget, gpointer data) {
     (void)widget; (void)data;
     if (current_role != ROLE_ADMIN) {
@@ -677,7 +1082,49 @@ void on_cours_edit(GtkWidget* widget, gpointer data) {
 
 void on_cours_delete(GtkWidget* widget, gpointer data) {
     (void)widget; (void)data;
-    print_info("Supprimer cours");
+    
+    if (current_role != ROLE_ADMIN) {
+        show_permission_error("la suppression de cours");
+        return;
+    }
+    
+    if (!global_cours_builder) {
+        print_error("Builder cours non disponible");
+        return;
+    }
+    
+    GtkTreeView* tree = GTK_TREE_VIEW(gtk_builder_get_object(global_cours_builder, "cours_treeview"));
+    if (!tree) return;
+    
+    GtkTreeSelection* selection = gtk_tree_view_get_selection(tree);
+    GtkTreeModel* model;
+    GtkTreeIter iter;
+    
+    if (gtk_tree_selection_get_selected(selection, &model, &iter)) {
+        gint id;
+        gchar* nom;
+        gtk_tree_model_get(model, &iter, 0, &id, 1, &nom, -1);
+        
+        gchar* msg = g_strdup_printf("Supprimer le cours %s (ID: %d) ?", nom, id);
+        GtkWidget* dialog = gtk_message_dialog_new(NULL, GTK_DIALOG_MODAL,
+            GTK_MESSAGE_QUESTION, GTK_BUTTONS_YES_NO, "%s", msg);
+        g_free(msg);
+        
+        int response = gtk_dialog_run(GTK_DIALOG(dialog));
+        gtk_widget_destroy(dialog);
+        
+        if (response == GTK_RESPONSE_YES) {
+            supprimer_cours(id);
+            on_cours_refresh(NULL, NULL);
+        }
+        
+        g_free(nom);
+    } else {
+        GtkWidget* dialog = gtk_message_dialog_new(NULL, GTK_DIALOG_MODAL,
+            GTK_MESSAGE_WARNING, GTK_BUTTONS_OK, "Veuillez sélectionner un cours");
+        gtk_dialog_run(GTK_DIALOG(dialog));
+        gtk_widget_destroy(dialog);
+    }
 }
 
 void on_cours_refresh(GtkWidget* widget, gpointer data) {
@@ -720,12 +1167,95 @@ void on_trainers_edit(GtkWidget* widget, gpointer data) {
 }
 
 void on_trainers_delete(GtkWidget* widget, gpointer data) {
-    print_info("Supprimer entraîneur");
+    (void)widget; (void)data;
+    
+    if (current_role != ROLE_ADMIN) {
+        show_permission_error("la suppression d'entraîneurs");
+        return;
+    }
+    
+    if (!global_entraineurs_builder) {
+        print_error("Builder entraineurs non disponible");
+        return;
+    }
+    
+    GtkTreeView* tree = GTK_TREE_VIEW(gtk_builder_get_object(global_entraineurs_builder, "entraineurs_treeview"));
+    if (!tree) return;
+    
+    GtkTreeSelection* selection = gtk_tree_view_get_selection(tree);
+    GtkTreeModel* model;
+    GtkTreeIter iter;
+    
+    if (gtk_tree_selection_get_selected(selection, &model, &iter)) {
+        gint id;
+        gchar* nom;
+        gchar* prenom;
+        gtk_tree_model_get(model, &iter, 0, &id, 1, &nom, 2, &prenom, -1);
+        
+        gchar* msg = g_strdup_printf("Supprimer l'entraîneur %s %s (ID: %d) ?", prenom, nom, id);
+        GtkWidget* dialog = gtk_message_dialog_new(NULL, GTK_DIALOG_MODAL,
+            GTK_MESSAGE_QUESTION, GTK_BUTTONS_YES_NO, "%s", msg);
+        g_free(msg);
+        
+        int response = gtk_dialog_run(GTK_DIALOG(dialog));
+        gtk_widget_destroy(dialog);
+        
+        if (response == GTK_RESPONSE_YES) {
+            supprimer_entraineur(id);
+            on_trainers_refresh(NULL, NULL);
+        }
+        
+        g_free(nom);
+        g_free(prenom);
+    } else {
+        GtkWidget* dialog = gtk_message_dialog_new(NULL, GTK_DIALOG_MODAL,
+            GTK_MESSAGE_WARNING, GTK_BUTTONS_OK, "Veuillez sélectionner un entraîneur");
+        gtk_dialog_run(GTK_DIALOG(dialog));
+        gtk_widget_destroy(dialog);
+    }
 }
 
 void on_trainers_refresh(GtkWidget* widget, gpointer data) {
-    print_info("Rafraîchir entraîneurs");
-    afficher_tous_entraineurs();
+    (void)widget; (void)data;
+    
+    if (!global_entraineurs_builder) {
+        print_error("Builder entraineurs non disponible");
+        return;
+    }
+    
+    GtkTreeView* tree = GTK_TREE_VIEW(gtk_builder_get_object(global_entraineurs_builder, "entraineurs_treeview"));
+    if (!tree) {
+        print_error("TreeView entraineurs_treeview introuvable");
+        return;
+    }
+    
+    GtkListStore* store = GTK_LIST_STORE(gtk_tree_view_get_model(tree));
+    if (!store) {
+        print_error("ListStore introuvable");
+        return;
+    }
+    
+    gtk_list_store_clear(store);
+    
+    Entraineur* entraineurs = NULL;
+    int count = charger_entraineurs(&entraineurs);
+    
+    for (int i = 0; i < count; i++) {
+        GtkTreeIter iter;
+        gtk_list_store_append(store, &iter);
+        gtk_list_store_set(store, &iter,
+            0, entraineurs[i].id,
+            1, entraineurs[i].nom,
+            2, entraineurs[i].prenom,
+            3, entraineurs[i].specialite,
+            4, entraineurs[i].telephone,
+            5, entraineurs[i].disponible ? "Oui" : "Non",
+            6, entraineurs[i].centreId,
+            -1);
+    }
+    
+    free(entraineurs);
+    print_info("Entraîneurs rechargés");
 }
 
 // Equipment
@@ -739,12 +1269,92 @@ void on_equipment_edit(GtkWidget* widget, gpointer data) {
 }
 
 void on_equipment_delete(GtkWidget* widget, gpointer data) {
-    print_info("Supprimer équipement");
+    (void)widget; (void)data;
+    
+    if (current_role != ROLE_ADMIN) {
+        show_permission_error("la suppression d'équipements");
+        return;
+    }
+    
+    if (!global_equipements_builder) {
+        print_error("Builder equipements non disponible");
+        return;
+    }
+    
+    GtkTreeView* tree = GTK_TREE_VIEW(gtk_builder_get_object(global_equipements_builder, "equipements_treeview"));
+    if (!tree) return;
+    
+    GtkTreeSelection* selection = gtk_tree_view_get_selection(tree);
+    GtkTreeModel* model;
+    GtkTreeIter iter;
+    
+    if (gtk_tree_selection_get_selected(selection, &model, &iter)) {
+        gint id;
+        gchar* nom;
+        gtk_tree_model_get(model, &iter, 0, &id, 1, &nom, -1);
+        
+        gchar* msg = g_strdup_printf("Supprimer l'équipement %s (ID: %d) ?", nom, id);
+        GtkWidget* dialog = gtk_message_dialog_new(NULL, GTK_DIALOG_MODAL,
+            GTK_MESSAGE_QUESTION, GTK_BUTTONS_YES_NO, "%s", msg);
+        g_free(msg);
+        
+        int response = gtk_dialog_run(GTK_DIALOG(dialog));
+        gtk_widget_destroy(dialog);
+        
+        if (response == GTK_RESPONSE_YES) {
+            supprimer_equipement(id);
+            on_equipment_refresh(NULL, NULL);
+        }
+        
+        g_free(nom);
+    } else {
+        GtkWidget* dialog = gtk_message_dialog_new(NULL, GTK_DIALOG_MODAL,
+            GTK_MESSAGE_WARNING, GTK_BUTTONS_OK, "Veuillez sélectionner un équipement");
+        gtk_dialog_run(GTK_DIALOG(dialog));
+        gtk_widget_destroy(dialog);
+    }
 }
 
 void on_equipment_refresh(GtkWidget* widget, gpointer data) {
-    print_info("Rafraîchir équipements");
-    afficher_tous_equipements();
+    (void)widget; (void)data;
+    
+    if (!global_equipements_builder) {
+        print_error("Builder equipements non disponible");
+        return;
+    }
+    
+    GtkTreeView* tree = GTK_TREE_VIEW(gtk_builder_get_object(global_equipements_builder, "equipements_treeview"));
+    if (!tree) {
+        print_error("TreeView equipements_treeview introuvable");
+        return;
+    }
+    
+    GtkListStore* store = GTK_LIST_STORE(gtk_tree_view_get_model(tree));
+    if (!store) {
+        print_error("ListStore introuvable");
+        return;
+    }
+    
+    gtk_list_store_clear(store);
+    
+    Equipement* equipements = NULL;
+    int count = charger_equipements(&equipements);
+    
+    for (int i = 0; i < count; i++) {
+        GtkTreeIter iter;
+        gtk_list_store_append(store, &iter);
+        gtk_list_store_set(store, &iter,
+            0, equipements[i].id,
+            1, equipements[i].nom,
+            2, equipements[i].type,
+            3, equipements[i].quantite,
+            4, equipements[i].disponible ? "Oui" : "Non",
+            5, equipements[i].centreId,
+            -1);
+    }
+    
+    free(equipements);
+    print_info("Équipements rechargés");
 }
 
 // Events
@@ -758,12 +1368,93 @@ void on_events_edit(GtkWidget* widget, gpointer data) {
 }
 
 void on_events_delete(GtkWidget* widget, gpointer data) {
-    print_info("Supprimer événement");
+    (void)widget; (void)data;
+    
+    if (current_role != ROLE_ADMIN) {
+        show_permission_error("la suppression d'événements");
+        return;
+    }
+    
+    if (!global_evenements_builder) {
+        print_error("Builder evenements non disponible");
+        return;
+    }
+    
+    GtkTreeView* tree = GTK_TREE_VIEW(gtk_builder_get_object(global_evenements_builder, "evenements_treeview"));
+    if (!tree) return;
+    
+    GtkTreeSelection* selection = gtk_tree_view_get_selection(tree);
+    GtkTreeModel* model;
+    GtkTreeIter iter;
+    
+    if (gtk_tree_selection_get_selected(selection, &model, &iter)) {
+        gint id;
+        gchar* nom;
+        gtk_tree_model_get(model, &iter, 0, &id, 1, &nom, -1);
+        
+        gchar* msg = g_strdup_printf("Supprimer l'événement %s (ID: %d) ?", nom, id);
+        GtkWidget* dialog = gtk_message_dialog_new(NULL, GTK_DIALOG_MODAL,
+            GTK_MESSAGE_QUESTION, GTK_BUTTONS_YES_NO, "%s", msg);
+        g_free(msg);
+        
+        int response = gtk_dialog_run(GTK_DIALOG(dialog));
+        gtk_widget_destroy(dialog);
+        
+        if (response == GTK_RESPONSE_YES) {
+            supprimer_evenement(id);
+            on_events_refresh(NULL, NULL);
+        }
+        
+        g_free(nom);
+    } else {
+        GtkWidget* dialog = gtk_message_dialog_new(NULL, GTK_DIALOG_MODAL,
+            GTK_MESSAGE_WARNING, GTK_BUTTONS_OK, "Veuillez sélectionner un événement");
+        gtk_dialog_run(GTK_DIALOG(dialog));
+        gtk_widget_destroy(dialog);
+    }
 }
 
 void on_events_refresh(GtkWidget* widget, gpointer data) {
-    print_info("Rafraîchir événements");
-    afficher_tous_evenements();
+    (void)widget; (void)data;
+    
+    if (!global_evenements_builder) {
+        print_error("Builder evenements non disponible");
+        return;
+    }
+    
+    GtkTreeView* tree = GTK_TREE_VIEW(gtk_builder_get_object(global_evenements_builder, "evenements_treeview"));
+    if (!tree) {
+        print_error("TreeView evenements_treeview introuvable");
+        return;
+    }
+    
+    GtkListStore* store = GTK_LIST_STORE(gtk_tree_view_get_model(tree));
+    if (!store) {
+        print_error("ListStore introuvable");
+        return;
+    }
+    
+    gtk_list_store_clear(store);
+    
+    Evenement* evenements = NULL;
+    int count = charger_evenements(&evenements);
+    
+    for (int i = 0; i < count; i++) {
+        GtkTreeIter iter;
+        gtk_list_store_append(store, &iter);
+        gtk_list_store_set(store, &iter,
+            0, evenements[i].id,
+            1, evenements[i].nom,
+            2, evenements[i].description,
+            3, evenements[i].date,
+            4, evenements[i].centreId,
+            5, evenements[i].capaciteMax,
+            6, evenements[i].inscrits,
+            -1);
+    }
+    
+    free(evenements);
+    print_info("Événements rechargés");
 }
 
 // ============= GTK Initialization =============

@@ -34,16 +34,22 @@
               <packing><property name="expand">True</property></packing>
             </child>
             <child>
-              <object class="GtkButton"><property name="label">➕ Ajouter</property><property name="visible">True</property><signal name="clicked" handler="on_cours_add"/></object>
+              <object class="GtkButton" id="cours_btn_add"><property name="label">➕ Ajouter</property><property name="visible">True</property><signal name="clicked" handler="on_cours_add"/></object>
             </child>
             <child>
-              <object class="GtkButton"><property name="label">✏️ Modifier</property><property name="visible">True</property><signal name="clicked" handler="on_cours_edit"/></object>
+              <object class="GtkButton" id="cours_btn_edit"><property name="label">✏️ Modifier</property><property name="visible">True</property><signal name="clicked" handler="on_cours_edit"/></object>
             </child>
             <child>
-              <object class="GtkButton"><property name="label">🗑️ Supprimer</property><property name="visible">True</property><signal name="clicked" handler="on_cours_delete"/></object>
+              <object class="GtkButton" id="cours_btn_delete"><property name="label">🗑️ Supprimer</property><property name="visible">True</property><signal name="clicked" handler="on_cours_delete"/></object>
             </child>
             <child>
-              <object class="GtkButton"><property name="label">🔄</property><property name="visible">True</property><signal name="clicked" handler="on_cours_refresh"/></object>
+              <object class="GtkButton" id="cours_btn_enroll"><property name="label">✅ S'inscrire</property><property name="visible">False</property><signal name="clicked" handler="on_cours_enroll"/></object>
+            </child>
+            <child>
+              <object class="GtkButton" id="cours_btn_join_trainer"><property name="label">👨‍🏫 Rejoindre</property><property name="visible">False</property><signal name="clicked" handler="on_cours_join_as_trainer"/></object>
+            </child>
+            <child>
+              <object class="GtkButton" id="cours_btn_refresh"><property name="label">🔄</property><property name="visible">True</property><signal name="clicked" handler="on_cours_refresh"/></object>
             </child>
           </object>
         </child>

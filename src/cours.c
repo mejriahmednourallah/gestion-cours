@@ -14,7 +14,38 @@ void modifier_cours(int id) {
 }
 
 void supprimer_cours(int id) {
-    print_info("Module cours - Fonction supprimer_cours à implémenter");
+    Cours* arr = NULL;
+    int count = charger_cours(&arr);
+    
+    if (count == 0 || arr == NULL) {
+        print_error("Impossible de charger les cours");
+        return;
+    }
+    
+    FILE* f = fopen("data/cours.txt", "w");
+    if (!f) {
+        print_error("Impossible d'ouvrir le fichier cours.txt");
+        free(arr);
+        return;
+    }
+    
+    for (int i = 0; i < count; i++) {
+        if (arr[i].id != id) {
+            fprintf(f, "%d,%s,%s,%s,%d,%d,%d,%d\n",
+                    arr[i].id,
+                    arr[i].nom,
+                    arr[i].type,
+                    arr[i].horaire,
+                    arr[i].entraineurId,
+                    arr[i].capaciteMax,
+                    arr[i].inscrits,
+                    arr[i].centreId);
+        }
+    }
+    
+    fclose(f);
+    free(arr);
+    print_info("Cours supprimé");
 }
 
 Cours* rechercher_cours(int id) {

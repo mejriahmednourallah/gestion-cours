@@ -61,15 +61,15 @@ int charger_cours(Cours** data) {
     int i = 0;
     while (i < count && fgets(buffer, sizeof(buffer), f)) {
         if (strlen(buffer) > 1) {
-            sscanf(buffer, "%d,%49[^,],%99[^,],%10[^,],%d,%d,%d,%d",
+            sscanf(buffer, "%d,%49[^,],%29[^,],%19[^,],%d,%d,%d,%d",
                    &cours[i].id,
                    cours[i].nom,
-                   cours[i].description,
+                   cours[i].type,
                    cours[i].horaire,
-                   &cours[i].capacite,
-                   &cours[i].inscrit,
-                   &cours[i].idEntraineur,
-                   &cours[i].idCentre);
+                   &cours[i].entraineurId,
+                   &cours[i].capaciteMax,
+                   &cours[i].inscrits,
+                   &cours[i].centreId);
             i++;
         }
     }

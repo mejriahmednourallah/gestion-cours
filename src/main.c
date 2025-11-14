@@ -696,12 +696,12 @@ void on_cours_refresh(GtkWidget* widget, gpointer data) {
         gtk_list_store_set(store, &iter,
             0, cours[i].id,
             1, cours[i].nom,
-            2, cours[i].description,
+            2, cours[i].type,
             3, cours[i].horaire,
-            4, cours[i].capacite,
-            5, cours[i].inscrit,
-            6, cours[i].idEntraineur,
-            7, cours[i].idCentre,
+            4, cours[i].capaciteMax,
+            5, cours[i].inscrits,
+            6, cours[i].entraineurId,
+            7, cours[i].centreId,
             -1);
     }
     

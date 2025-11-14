@@ -1,5 +1,8 @@
 #include "cours.h"
 #include "utils.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 // CRUD Operations stubs
 void ajouter_cours() {
@@ -29,8 +32,51 @@ void sauvegarder_cours(Cours* data, int count) {
 }
 
 int charger_cours(Cours** data) {
-    print_info("Module cours - Fonction charger_cours à implémenter");
-    return 0;
+    FILE* f = fopen("data/cours.txt", "r");
+    if (!f) {
+        *data = NULL;
+        return 0;
+    }
+    
+    int count = 0;
+    char buffer[512];
+    while (fgets(buffer, sizeof(buffer), f)) {
+        if (strlen(buffer) > 1) count++;
+    }
+    
+    if (count == 0) {
+        fclose(f);
+        *data = NULL;
+        return 0;
+    }
+    
+    Cours* cours = malloc(sizeof(Cours) * count);
+    if (!cours) {
+        fclose(f);
+        *data = NULL;
+        return 0;
+    }
+    
+    rewind(f);
+    int i = 0;
+    while (i < count && fgets(buffer, sizeof(buffer), f)) {
+        if (strlen(buffer) > 1) {
+            sscanf(buffer, "%d,%49[^,],%99[^,],%10[^,],%d,%d,%d,%d",
+                   &cours[i].id,
+                   cours[i].nom,
+                   cours[i].description,
+                   cours[i].horaire,
+                   &cours[i].capacite,
+                   &cours[i].inscrit,
+                   &cours[i].idEntraineur,
+                   &cours[i].idCentre);
+            i++;
+        }
+    }
+    
+    fclose(f);
+    *data = cours;
+    return count;
 }
 
 // Statistics stubs
